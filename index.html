@@ -171,9 +171,18 @@ input[type=file]{display:none;}
 .kat-lbl-name{font-size:12px;font-weight:700;color:inherit;}
 .kat-lbl-hint{font-size:10px;color:#94a3b8;margin-top:2px;font-weight:400;}
 .kat-cb:checked + .kat-lbl .kat-lbl-hint{color:#3b82f6;}
-.footer-bar{background:#1a4fa0;padding:12px 16px;text-align:center;flex-shrink:0;}
-.footer-text{font-size:11px;color:rgba(255,255,255,0.7);}
-.footer-text span{color:#f5c518;font-weight:700;}
+.b-kritikal{background:#fee2e2;color:#7f1d1d;border:1px solid #fca5a5;}
+.b-tinggi{background:#ffedd5;color:#7c2d12;border:1px solid #fdba74;}
+.b-sederhana{background:#fef9c3;color:#713f12;border:1px solid #fde047;}
+.b-rendah{background:#dcfce7;color:#14532d;border:1px solid #86efac;}
+.b-ditugaskan{background:#ede9fe;color:#4c1d95;border:1px solid #c4b5fd;}
+.b-ditolak{background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;}
+.aksi-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.btn-terima{padding:10px;border-radius:10px;background:#059669;color:#fff;font-size:13px;font-weight:700;font-family:inherit;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;}
+.btn-tolak{padding:10px;border-radius:10px;background:#fff;color:#dc2626;font-size:13px;font-weight:700;font-family:inherit;border:1.5px solid #fca5a5;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;}
+.btn-terima:active,.btn-tolak:active{opacity:.8;}
+.keutamaan-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.keutamaan-pill{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;cursor:pointer;border:none;font-family:inherit;}
 </style>
 </head>
 <body>
@@ -343,30 +352,46 @@ input[type=file]{display:none;}
         </div>
         <div class="field"><label>Tarikh *</label><input type="date" id="f_tarikh"></div>
       </div>
-      <div class="field"><label>Lokasi *</label>
-        <select id="f_lokasi"><option value="">Pilih lokasi</option><option>HQ True Zeal</option><option>PHDT Parit Raja</option><option>PHDT Batu Pahat</option><option>Kedai LS</option></select>
+      <div class="field-row">
+        <div class="field"><label>Masa *</label><input type="time" id="f_masa"></div>
+        <div class="field"><label>Lokasi *</label>
+          <select id="f_lokasi"><option value="">Pilih lokasi</option><option>HQ True Zeal</option><option>PHDT Parit Raja</option><option>PHDT Batu Pahat</option><option>Kedai LS</option><option>Kandang LS</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Tahap Keutamaan *</label>
+        <select id="f_keutamaan">
+          <option value="">Pilih tahap keutamaan</option>
+          <option value="Rendah">🟢 Rendah — Tidak mengganggu operasi</option>
+          <option value="Sederhana">🟡 Sederhana — Mengganggu sedikit</option>
+          <option value="Tinggi">🟠 Tinggi — Perlu tindakan segera</option>
+          <option value="Kritikal">🔴 Kritikal — Operasi tergendala</option>
+        </select>
       </div>
 
       <div class="divider"></div>
 
-      <!-- Senarai Isu -->
-      <div style="font-size:11px;font-weight:700;color:#1a4fa0;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
-        <span>📋 Senarai Isu</span>
-        <span id="isuKiraan" style="background:#e6f1fb;padding:2px 10px;border-radius:20px;font-size:11px;">1 isu</span>
+      <!-- Kategori Isu -->
+      <div style="font-size:11px;font-weight:700;color:#1a4fa0;margin-bottom:8px;">
+        📋 Kategori Isu * <span style="font-size:10px;color:#94a3b8;font-weight:400;">(boleh pilih lebih dari 1)</span>
       </div>
+      <div class="kat-grid" id="kategoriGrid"></div>
+      <div id="kat_err" style="font-size:11px;color:#ef4444;display:none;margin-bottom:10px;">⚠ Sila pilih sekurang-kurangnya satu kategori</div>
 
-      <div id="isuContainer"></div>
-
-      <!-- Butang Tambah Isu -->
-      <button onclick="tambahIsu()" style="width:100%;padding:11px;border-radius:10px;background:#f0f6ff;color:#1a4fa0;font-size:13px;font-weight:700;font-family:inherit;border:1.5px dashed #93c5fd;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:14px;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Tambah Isu Lain
-      </button>
+      <!-- Upload Gambar -->
+      <div class="field" style="margin-top:10px;">
+        <label>Gambar Kerosakan (pilihan, maks 3)</label>
+        <div class="upload-box" onclick="document.getElementById('fileUp').click()">
+          <input type="file" id="fileUp" accept="image/*" multiple onchange="piliGambar(this)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" style="margin:0 auto 5px;display:block;"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <div id="uploadTxt" style="font-size:12px;color:#94a3b8;">Ketik untuk pilih gambar</div>
+        </div>
+        <div class="img-grid" id="imgGrid"></div>
+      </div>
 
       <div class="divider"></div>
       <button class="btn btn-yellow" id="btnHantar" onclick="hantarAduan()">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Hantar Laporan Aduan
+        Hantar Aduan
       </button>
     </div>
   </div>
@@ -384,9 +409,10 @@ input[type=file]{display:none;}
     <div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;">
       <button class="filter-btn active" id="f-semua" onclick="setFilter('semua')">Semua</button>
       <button class="filter-btn" id="f-baru" onclick="setFilter('baru')">🔴 Baru</button>
-      <button class="filter-btn" id="f-proses" onclick="setFilter('proses')">🟡 Dalam Proses</button>
+      <button class="filter-btn" id="f-proses" onclick="setFilter('proses')">🟣 Ditugaskan</button>
       <button class="filter-btn" id="f-tangguh" onclick="setFilter('tangguh')">⚠ Tangguh</button>
       <button class="filter-btn" id="f-selesai" onclick="setFilter('selesai')">✅ Selesai</button>
+      <button class="filter-btn" id="f-ditolak" onclick="setFilter('ditolak')">🚫 Ditolak</button>
     </div>
     <!-- Kiraan ringkas -->
     <div id="senaraiKiraan" style="font-size:11px;color:#64748b;margin-bottom:10px;"></div>
@@ -507,6 +533,19 @@ function tandakanSelesai(key, i) {
   if (typeof window._tandakanSelesai === 'function') window._tandakanSelesai(key, i);
 }
 
+function terimaAduan(key) {
+  if (typeof window._terimaAduan === 'function') window._terimaAduan(key);
+}
+
+function tolakAduan(key) {
+  if (typeof window._tolakAduan === 'function') window._tolakAduan(key);
+}
+
+function toggleTolakPanel(key) {
+  var el = document.getElementById('tolak_panel_'+key);
+  if(el) el.style.display = el.style.display==='none'?'block':'none';
+}
+
 function tambahIsu() {
   if (typeof window._tambahIsu === 'function') window._tambahIsu();
 }
@@ -571,17 +610,16 @@ var aduanData=[], gambarFiles=[], c1=null, c2=null;
 
 setConn('spin','Menyambung...');
 document.getElementById('f_tarikh').value = new Date().toISOString().split('T')[0];
-// Tambah isu pertama secara automatik selepas module load
-setTimeout(()=>tambahIsu(), 200);
+document.getElementById('f_masa').value = new Date().toTimeString().slice(0,5);
 
 onValue(ref(db,'aduan'), snap=>{
   const data=snap.val(); aduanData=[];
   if(data){ Object.keys(data).forEach(k=>aduanData.unshift(Object.assign({_key:k},data[k]))); aduanData.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)); }
-  kiraNo(); renderSenarai(); renderTindakan(); renderDashboard();
+  kiraNo(); renderKategoriGrid(); renderSenarai(); renderTindakan(); renderDashboard();
   setConn('green','Firebase Disambung');
 }, ()=>{ setConn('red','Gagal Sambung'); toast('Gagal sambung Firebase','error'); });
 
-// Daftarkan fungsi modul ke window supaya script biasa boleh akses
+// Daftarkan fungsi modul ke window
 window._renderDashboard = ()=>renderDashboard();
 window._renderTindakan  = ()=>renderTindakan();
 window._renderSenarai   = ()=>renderSenarai();
@@ -589,141 +627,73 @@ window._filterAktif     = 'semua';
 
 const kiraNo=()=>{ const yr=new Date().getFullYear(); const no='ADU-'+yr+'-'+String(aduanData.length+1).padStart(4,'0'); document.getElementById('noAduan').textContent=no; return no; };
 
-// ── MULTI-ISU BORANG ─────────────────────────────────────
-var isuCount = 0;
-var isuGambar = {}; // { isuId: [File, ...] }
-
+// ── KATEGORI LIST ─────────────────────────────────────────
 const KATEGORI_LIST = [
-  {val:'Elektrik',              hint:'Pendawaian, suis, fius, lampu, soket'},
-  {val:'Perpaipan',             hint:'Paip bocor, sinki, tandas, saliran'},
-  {val:'Internet / Rangkaian',  hint:'WiFi, LAN, router, sambungan lambat'},
-  {val:'Perkakasan IT',         hint:'Komputer, printer, skrin, tetikus'},
-  {val:'Perisian (Software)',   hint:'Sistem, aplikasi, error, virus'},
+  {val:'Elektrik',              hint:'Pendawaian, suis, fius, lampu'},
+  {val:'Perpaipan',             hint:'Paip bocor, sinki, tandas'},
+  {val:'Internet / Rangkaian',  hint:'WiFi, LAN, router'},
+  {val:'Perkakasan IT',         hint:'Komputer, printer, skrin'},
+  {val:'Perisian (Software)',   hint:'Sistem, aplikasi, error'},
   {val:'Penyaman Udara (HVAC)', hint:'Aircond, kipas, pengudaraan'},
-  {val:'Struktur Bangunan',     hint:'Dinding, bumbung, lantai, pintu'},
-  {val:'Keselamatan / Security',hint:'CCTV, kunci, akses kad, penggera'},
-  {val:'Perabot',               hint:'Meja, kerusi, almari, rak'},
+  {val:'Struktur Bangunan',     hint:'Dinding, bumbung, lantai'},
+  {val:'Keselamatan / Security',hint:'CCTV, kunci, akses kad'},
+  {val:'Perabot',               hint:'Meja, kerusi, almari'},
   {val:'Telekomunikasi',        hint:'Telefon, intercom, fax'},
-  {val:'Bekalan Air',           hint:'Air kotor, tiada air, tekanan rendah'},
-  {val:'Peralatan Klinikal',    hint:'Mesin dialisis, peralatan perubatan'},
-  {val:'Penyelenggaraan Umum',  hint:'Repair umum, preventive maintenance'}
+  {val:'Bekalan Air',           hint:'Air kotor, tiada air'},
+  {val:'Peralatan Klinikal',    hint:'Mesin dialisis, peralatan'},
+  {val:'Penyelenggaraan Umum',  hint:'Repair umum, PM'}
 ];
 
-const buatKatGrid = id => KATEGORI_LIST.map((k,i) =>
-  `<div>
-    <input class="kat-cb" type="checkbox" id="kat_${id}_${i}" name="kat_${id}" value="${k.val}">
-    <label class="kat-lbl" for="kat_${id}_${i}">
-      <span class="kat-lbl-name">${k.val}</span>
-      <span class="kat-lbl-hint">${k.hint}</span>
-    </label>
-  </div>`
-).join('');
-
-const buatIsuItem = (id, bolehBuang) => {
-  const div = document.createElement('div');
-  div.className = 'isu-item';
-  div.id = `isu_${id}`;
-  div.innerHTML = `
-    <div class="isu-header">
-      <span class="isu-label">Isu ${id}</span>
-      ${bolehBuang ? `<button class="isu-remove" onclick="buangIsu(${id})">×</button>` : ''}
-    </div>
-    <div class="field">
-      <label>Kategori Isu * <span style="font-size:10px;color:#94a3b8;font-weight:400;">(boleh pilih lebih dari 1)</span></label>
-      <div class="kat-grid" id="isu_kat_grid_${id}">${buatKatGrid(id)}</div>
-      <div id="isu_kat_err_${id}" style="font-size:11px;color:#ef4444;display:none;margin-top:4px;">⚠ Sila pilih sekurang-kurangnya satu kategori</div>
-    </div>
-    <div class="field">
-      <label>Penerangan Masalah *</label>
-      <textarea id="isu_cat_${id}" placeholder="Huraikan masalah dengan jelas..." style="min-height:80px;width:100%;padding:11px 13px;border:.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;font-family:inherit;resize:none;line-height:1.5;"></textarea>
-    </div>
-    <div class="field">
-      <label>Gambar Kerosakan (pilihan, maks 3)</label>
-      <div class="upload-box" style="padding:12px;" onclick="document.getElementById('isu_img_${id}').click()">
-        <input type="file" id="isu_img_${id}" accept="image/*" multiple onchange="piliGambarIsu(this,${id})">
-        <div id="isu_img_txt_${id}" style="font-size:12px;color:#94a3b8;">📷 Ketik untuk pilih gambar</div>
-      </div>
-      <div class="img-grid" id="isu_img_grid_${id}"></div>
-    </div>`;
-  return div;
+const renderKategoriGrid = () => {
+  const grid = document.getElementById('kategoriGrid');
+  if(!grid) return;
+  grid.innerHTML = KATEGORI_LIST.map((k,i) => `
+    <div>
+      <input class="kat-cb" type="checkbox" id="kat_${i}" name="kat_borang" value="${k.val}">
+      <label class="kat-lbl" for="kat_${i}">
+        <span class="kat-lbl-name">${k.val}</span>
+        <span class="kat-lbl-hint">${k.hint}</span>
+      </label>
+    </div>`).join('');
 };
 
-window.tambahIsu = () => {
-  isuCount++;
-  const container = document.getElementById('isuContainer');
-  container.appendChild(buatIsuItem(isuCount, isuCount > 1));
-  document.getElementById('isuKiraan').textContent = isuCount + ' isu';
-};
-
-window.buangIsu = id => {
-  const el = document.getElementById('isu_'+id);
-  if(el) el.remove();
-  delete isuGambar[id];
-  // Kira semula
-  const baki = document.querySelectorAll('.isu-item').length;
-  document.getElementById('isuKiraan').textContent = baki + ' isu';
-};
-
-window.piliGambarIsu = (input, id) => {
+// ── GAMBAR ────────────────────────────────────────────────
+window.piliGambar = input => {
   const files = Array.from(input.files).slice(0,3);
-  isuGambar[id] = files;
-  const grid = document.getElementById('isu_img_grid_'+id);
-  const txt = document.getElementById('isu_img_txt_'+id);
+  gambarFiles = files;
+  const grid = document.getElementById('imgGrid');
+  const txt  = document.getElementById('uploadTxt');
   grid.innerHTML = '';
-  if(txt) txt.textContent = files.length + ' gambar dipilih';
+  if(txt) txt.textContent = files.length+' gambar dipilih';
   files.forEach((file,i) => {
-    const r = new FileReader();
-    r.onload = e => {
-      const item = document.createElement('div');
-      item.className = 'img-item';
-      item.innerHTML = `<img src="${e.target.result}" alt="p"><button class="rm-btn" onclick="buangGambarIsu(${id},${i})">×</button>`;
+    const r=new FileReader(); r.onload=e=>{
+      const item=document.createElement('div'); item.className='img-item';
+      item.innerHTML=`<img src="${e.target.result}" alt="p"><button class="rm-btn" onclick="buangGambar(${i})">×</button>`;
       grid.appendChild(item);
-    };
-    r.readAsDataURL(file);
+    }; r.readAsDataURL(file);
   });
 };
 
-window.buangGambarIsu = (id, idx) => {
-  if(isuGambar[id]) isuGambar[id].splice(idx,1);
-  // Re-render grid
-  const grid = document.getElementById('isu_img_grid_'+id);
-  const txt = document.getElementById('isu_img_txt_'+id);
-  grid.innerHTML = '';
-  if(txt) txt.textContent = (isuGambar[id]?.length||0) > 0 ? isuGambar[id].length+' gambar dipilih' : '📷 Ketik untuk pilih gambar';
-  (isuGambar[id]||[]).forEach((file,i) => {
-    const r = new FileReader();
-    r.onload = e => {
-      const item = document.createElement('div');
-      item.className = 'img-item';
-      item.innerHTML = `<img src="${e.target.result}" alt="p"><button class="rm-btn" onclick="buangGambarIsu(${id},${i})">×</button>`;
-      grid.appendChild(item);
-    };
-    r.readAsDataURL(file);
-  });
+window.buangGambar = i => {
+  gambarFiles.splice(i,1);
+  document.getElementById('fileUp').value='';
+  document.getElementById('imgGrid').innerHTML='';
+  document.getElementById('uploadTxt').textContent = gambarFiles.length>0?gambarFiles.length+' gambar dipilih':'Ketik untuk pilih gambar';
+  gambarFiles.forEach((file,j)=>{ const r=new FileReader(); r.onload=e=>{ const item=document.createElement('div'); item.className='img-item'; item.innerHTML=`<img src="${e.target.result}" alt="p"><button class="rm-btn" onclick="buangGambar(${j})">×</button>`; document.getElementById('imgGrid').appendChild(item); }; r.readAsDataURL(file); });
 };
 
-// Legacy - kekalkan untuk compatibility
-window.piliGambar = input => {};
-
+// ── VALIDASI ─────────────────────────────────────────────
 const validasi = () => {
   let ok = true;
-  const ids = ['f_nama','f_jawatan','f_lokasi'];
-  ids.forEach(id => {
+  ['f_nama','f_jawatan','f_lokasi','f_keutamaan'].forEach(id => {
     const el = document.getElementById(id);
     el.classList.remove('err');
     if(!el.value.trim()){ el.classList.add('err'); ok = false; }
   });
-  // Validasi setiap isu
-  const isuItems = document.querySelectorAll('.isu-item');
-  if(isuItems.length === 0){ toast('Sila tambah sekurang-kurangnya satu isu','error'); return false; }
-  isuItems.forEach(item => {
-    const id = item.id.replace('isu_','');
-    const checked = document.querySelectorAll(`input[name="kat_${id}"]:checked`);
-    const errEl = document.getElementById('isu_kat_err_'+id);
-    if(checked.length===0){ if(errEl)errEl.style.display='block'; ok=false; } else { if(errEl)errEl.style.display='none'; }
-    const cat = document.getElementById('isu_cat_'+id);
-    if(cat){ cat.style.border=''; if(!cat.value.trim()){ cat.style.border='1.5px solid #ef4444'; ok=false; } }
-  });
+  const checked = document.querySelectorAll('input[name="kat_borang"]:checked');
+  const errEl = document.getElementById('kat_err');
+  if(checked.length===0){ if(errEl)errEl.style.display='block'; ok=false; }
+  else { if(errEl)errEl.style.display='none'; }
   return ok;
 };
 
@@ -742,13 +712,8 @@ const uploadGambar=async files=>{
 
 const f2b64=file=>new Promise((res,rej)=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsDataURL(file); });
 
-// Ambil gambar sebagai base64 dari URL (untuk PDF)
 const urlToB64=async url=>{
-  try{
-    const res=await fetch(url);
-    const blob=await res.blob();
-    return await f2b64(blob);
-  }catch(e){ return null; }
+  try{ const res=await fetch(url); const blob=await res.blob(); return await f2b64(blob); }catch(e){ return null; }
 };
 
 // ── HANTAR EMEL VIA WEB3FORMS ────────────────────────────
@@ -786,64 +751,55 @@ const hantarEmel = async (subject, to, params) => {
   }
 };
 
-// ── HANTAR ADUAN (MULTI-ISU) ─────────────────────────────
+// ── HANTAR ADUAN ─────────────────────────────────────────
 window.hantarAduan=async()=>{
   if(!validasi()){toast('Sila isi semua medan wajib *','error');return;}
   const no=kiraNo();
   document.getElementById('loadBorang').classList.add('show');
   document.getElementById('btnHantar').disabled=true;
 
-  const isuItems=document.querySelectorAll('.isu-item');
-  const senaraIsu=[];
+  const kategoriDipilih=Array.from(document.querySelectorAll('input[name="kat_borang"]:checked')).map(cb=>cb.value);
 
-  for(let i=0;i<isuItems.length;i++){
-    const id=isuItems[i].id.replace('isu_','');
-    const checked=Array.from(document.querySelectorAll(`input[name="kat_${id}"]:checked`)).map(cb=>cb.value);
-    const kategori=checked.join(', ');
-    const catatan=document.getElementById('isu_cat_'+id)?.value.trim()||'';
-    const files=isuGambar[id]||[];
-    let gambar=[];
-    if(files.length>0){
-      document.getElementById('loadMsg').textContent=`Isu ${i+1}: menghantar gambar...`;
-      document.getElementById('loadSub').textContent=`${files.length} gambar`;
-      gambar=await uploadGambar(files);
-    }
-    senaraIsu.push({kategori,catatan,gambar,isuNo:i+1});
+  let gambar=[];
+  if(gambarFiles.length>0){
+    document.getElementById('loadMsg').textContent='Menghantar gambar...';
+    gambar=await uploadGambar(gambarFiles);
   }
 
+  const masa=document.getElementById('f_masa').value||new Date().toTimeString().slice(0,5);
   const p={
     noAduan     : no,
     namaPengadu : document.getElementById('f_nama').value.trim(),
     jawatan     : document.getElementById('f_jawatan').value,
     lokasi      : document.getElementById('f_lokasi').value,
     tarikh      : document.getElementById('f_tarikh').value,
-    kategoriIsu : senaraIsu.map(s=>s.kategori).join(', '),
-    catatan     : senaraIsu.map((s,i)=>`Isu ${i+1} (${s.kategori}): ${s.catatan}`).join('\n'),
-    senaraIsu,
-    gambar      : senaraIsu[0]?.gambar||[],
-    status      : 'Baru', timestamp: Date.now()
+    masa,
+    kategoriIsu : kategoriDipilih.join(', '),
+    keutamaan   : document.getElementById('f_keutamaan').value,
+    gambar,
+    status      : 'Baru',
+    timestamp   : Date.now()
   };
 
   try{
     document.getElementById('loadMsg').textContent='Menyimpan ke Firebase...';
-    document.getElementById('loadSub').textContent='';
     await push(ref(db,'aduan'),p);
 
-    const isuList=senaraIsu.map((s,i)=>`Isu ${i+1}: ${s.kategori}\n${'─'.repeat(28)}\n${s.catatan}\n`).join('\n');
     document.getElementById('loadMsg').textContent='Menghantar notifikasi emel...';
     await hantarEmel(
-      `[TechCareTZ] Aduan Baru — ${no} (${senaraIsu.length} Isu)`,
+      `[TechCareTZ] Aduan Baru — ${no} [${p.keutamaan}]`,
       EMAIL_TEKNIKAL,
       {
-        message:`Aduan baharu telah diterima.\n\nNo. Aduan  : ${no}\nNama       : ${p.namaPengadu}\nJawatan    : ${p.jawatan}\nLokasi     : ${p.lokasi}\nTarikh     : ${p.tarikh}\nJumlah Isu : ${senaraIsu.length}\n\n${'═'.repeat(30)}\nBUTIRAN ISU\n${'═'.repeat(30)}\n\n${isuList}\nSila log masuk ke TechCareTZ untuk tindakan lanjut.`,
+        message:`Aduan baharu telah diterima dan menunggu semakan.\n\nNo. Aduan   : ${no}\nNama        : ${p.namaPengadu}\nJawatan     : ${p.jawatan}\nLokasi      : ${p.lokasi}\nTarikh/Masa : ${p.tarikh} ${masa}\nKeutamaan   : ${p.keutamaan}\nKategori    : ${kategoriDipilih.join(', ')}\n\nSila semak di Tab Senarai untuk Terima atau Tolak aduan ini.`,
         no_aduan:no, nama:p.namaPengadu, lokasi:p.lokasi,
         kategori:p.kategoriIsu, tarikh:p.tarikh
       }
     );
+
     document.getElementById('loadBorang').classList.remove('show');
     document.getElementById('btnHantar').disabled=false;
     resetBorang();
-    toast(`Aduan ${no} (${senaraIsu.length} isu) berjaya dihantar!`,'success');
+    toast(`Aduan ${no} berjaya dihantar! Menunggu semakan unit teknikal.`,'success');
   }catch(err){
     document.getElementById('loadBorang').classList.remove('show');
     document.getElementById('btnHantar').disabled=false;
@@ -982,6 +938,10 @@ window.pdfSemuaAduan=()=>{
   toast('PDF semua aduan dimuat turun!','success');
 };
 
+// ── KEUTAMAAN HELPER ─────────────────────────────────────
+const keutamaanBadge=k=>{ const m={Kritikal:'b-kritikal',Tinggi:'b-tinggi',Sederhana:'b-sederhana',Rendah:'b-rendah'}; return `<span class="badge ${m[k]||'b-gray'}">${k||'Tiada'}</span>`; };
+const statusBadge=s=>{ const m={Baru:'b-gray',Ditugaskan:'b-ditugaskan',Ditolak:'b-ditolak','Dalam Proses':'b-yellow',Tangguh:'b-red',Selesai:'b-green'}; return `<span class="badge ${m[s]||'b-gray'}">${s||'Baru'}</span>`; };
+
 // ── FILTER STATE ─────────────────────────────────────────
 var filterAktif = 'semua';
 
@@ -998,98 +958,84 @@ window.toggleSelesai = () => {
   if(body){ body.classList.toggle('show'); arrow?.classList.toggle('open'); }
 };
 
-// ── RENDER SENARAI — Cadangan 5 ──────────────────────────
+// ── RENDER SENARAI ────────────────────────────────────────
 const renderSenarai=()=>{
   const c = document.getElementById('senaraiList');
   const kiraan = document.getElementById('senaraiKiraan');
   if(!aduanData.length){ c.innerHTML='<div class="empty">Tiada aduan lagi.</div>'; if(kiraan)kiraan.textContent=''; return; }
 
-  const bmap={Selesai:'b-green',Baru:'b-gray',Tangguh:'b-red','Dalam proses':'b-yellow','Telah hubungi':'b-yellow','Set masa datang':'b-blue'};
+  const priority = s => s==='Baru'?0:s==='Ditugaskan'?1:s==='Ditolak'?98:s==='Selesai'?99:2;
+  const sorted = [...aduanData].sort((a,b)=>priority(a.status)-priority(b.status));
 
-  // Susun ikut keutamaan: Baru/Tangguh → Dalam Proses → Selesai
-  const priority = s => s==='Baru'?0:s==='Tangguh'?1:s==='Selesai'?99:2;
-  const sorted = [...aduanData].sort((a,b) => priority(a.status) - priority(b.status));
+  const statusMap={semua:null,baru:['Baru'],proses:['Ditugaskan','Dalam Proses'],tangguh:['Tangguh'],selesai:['Selesai'],ditolak:['Ditolak']};
+  const filterList=statusMap[window._filterAktif||'semua'];
+  const ditapis=filterList?sorted.filter(a=>filterList.includes(a.status||'Baru')):sorted;
 
-  // Tapis mengikut filter aktif
-  const statusMap = {
-    semua   : null,
-    baru    : ['Baru'],
-    proses  : ['Telah hubungi','Set masa datang','Dalam proses'],
-    tangguh : ['Tangguh'],
-    selesai : ['Selesai']
-  };
-  const filterList = statusMap[window._filterAktif||'semua'];
-  const ditapis = filterList ? sorted.filter(a => filterList.includes(a.status||'Baru')) : sorted;
+  const jBaru=aduanData.filter(a=>(a.status||'Baru')==='Baru').length;
+  const jDitugaskan=aduanData.filter(a=>a.status==='Ditugaskan').length;
+  const jProses=aduanData.filter(a=>['Dalam Proses'].includes(a.status)).length;
+  const jSelesai=aduanData.filter(a=>a.status==='Selesai').length;
+  const jTolak=aduanData.filter(a=>a.status==='Ditolak').length;
 
-  // Kira setiap status untuk kiraan
-  const jBaru    = aduanData.filter(a => (a.status||'Baru')==='Baru').length;
-  const jProses  = aduanData.filter(a => ['Telah hubungi','Set masa datang','Dalam proses'].includes(a.status)).length;
-  const jTangguh = aduanData.filter(a => a.status==='Tangguh').length;
-  const jSelesai = aduanData.filter(a => a.status==='Selesai').length;
+  if(kiraan) kiraan.innerHTML=`<span style="color:#ef4444;font-weight:700;">${jBaru} Baru</span> &nbsp;·&nbsp; <span style="color:#7c3aed;font-weight:700;">${jDitugaskan} Ditugaskan</span> &nbsp;·&nbsp; <span style="color:#059669;font-weight:700;">${jSelesai} Selesai</span>`;
 
-  if(kiraan) kiraan.innerHTML =
-    `<span style="color:#ef4444;font-weight:700;">${jBaru} Baru</span> &nbsp;·&nbsp; ` +
-    `<span style="color:#d97706;font-weight:700;">${jProses} Proses</span> &nbsp;·&nbsp; ` +
-    `<span style="color:#dc2626;font-weight:700;">${jTangguh} Tangguh</span> &nbsp;·&nbsp; ` +
-    `<span style="color:#059669;font-weight:700;">${jSelesai} Selesai</span>`;
+  if(!ditapis.length){ c.innerHTML='<div class="empty">Tiada aduan dalam kategori ini.</div>'; return; }
 
-  if(!ditapis.length){
-    c.innerHTML='<div class="empty">Tiada aduan dalam kategori ini.</div>'; return;
-  }
+  const KEUTAMAAN_OPTS=['Rendah','Sederhana','Tinggi','Kritikal'];
 
-  // Pisahkan aktif dan selesai
-  const aktifList  = ditapis.filter(a => a.status !== 'Selesai');
-  const selesaiList = ditapis.filter(a => a.status === 'Selesai');
+  const buatKad=a=>{
+    let imgs='';
+    if(a.gambar?.length){imgs='<div class="img-row">'+a.gambar.map(g=>`<img class="img-thumb" src="${g.thumb||g.url}" onclick="bukaLightbox('${g.url}')" alt="g">`).join('')+'</div>';}
+    const isBaru=(a.status||'Baru')==='Baru';
+    const isDitolak=a.status==='Ditolak';
+    const border=isBaru?'border-left:3px solid #ef4444':isDitolak?'border-left:3px solid #94a3b8;opacity:.7':a.status==='Selesai'?'border-left:3px solid #10b981;opacity:.85':a.status==='Ditugaskan'?'border-left:3px solid #7c3aed':'border-left:3px solid #f5c518';
 
-  const buatKad = a => {
-    let imgs = '';
-    if(a.gambar?.length){ imgs='<div class="img-row">'+a.gambar.map(g=>`<img class="img-thumb" src="${g.thumb||g.url}" onclick="bukaLightbox('${g.url}')" alt="g">`).join('')+'</div>'; }
-    const border = a.status==='Tangguh'?'border-left:3px solid #ef4444;':a.status==='Baru'?'border-left:3px solid #94a3b8;':a.status==='Selesai'?'border-left:3px solid #10b981;opacity:.85;':'border-left:3px solid #f5c518;';
+    const aksiPanel = isBaru ? `
+      <div style="background:#f8fafc;border-radius:10px;padding:10px;margin-top:10px;border:.5px solid rgba(0,0,0,0.08);">
+        <div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">⚙ Semakan Unit Teknikal</div>
+        <div class="field" style="margin-bottom:8px;">
+          <label style="font-size:11px;">Kemaskini Keutamaan (pilihan)</label>
+          <select id="keutamaan_edit_${a._key}" style="width:100%;padding:8px 12px;border:.5px solid rgba(0,0,0,0.15);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;">
+            <option value="${a.keutamaan||''}">${a.keutamaan||'Kekal sama'}</option>
+            ${KEUTAMAAN_OPTS.filter(k=>k!==a.keutamaan).map(k=>`<option value="${k}">${k}</option>`).join('')}
+          </select>
+        </div>
+        <div class="aksi-row">
+          <button class="btn-terima" onclick="terimaAduan('${a._key}')">✅ Terima</button>
+          <button class="btn-tolak" onclick="toggleTolakPanel('${a._key}')">❌ Tolak</button>
+        </div>
+        <div id="tolak_panel_${a._key}" style="display:none;margin-top:8px;">
+          <textarea id="sebab_tolak_${a._key}" placeholder="Sebab ditolak (pilihan)..." style="width:100%;padding:8px 10px;border:.5px solid #fca5a5;border-radius:8px;font-size:12px;font-family:inherit;resize:none;min-height:55px;"></textarea>
+          <button onclick="tolakAduan('${a._key}')" style="width:100%;margin-top:6px;padding:9px;border-radius:8px;background:#dc2626;color:#fff;font-size:12px;font-weight:700;font-family:inherit;border:none;cursor:pointer;">Sahkan Tolak</button>
+        </div>
+      </div>` : isDitolak ? `<div style="font-size:11px;color:#94a3b8;margin-top:6px;">🚫 Ditolak${a.sebabTolak?' — '+a.sebabTolak:''} · ${a.tarikhDitolak||''}</div>` : '';
+
     return `<div class="aduan-card" style="${border}">
       <div class="aduan-head">
         <span class="aduan-no">${a.noAduan||''}</span>
-        <span class="badge ${bmap[a.status||'Baru']||'b-gray'}">${a.status||'Baru'}</span>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;">${keutamaanBadge(a.keutamaan)} ${statusBadge(a.status)}</div>
       </div>
-      <div class="aduan-kat">${a.senaraIsu?`${a.senaraIsu.length} Isu: `:''}${a.kategoriIsu||''}</div>
+      <div class="aduan-kat">${a.kategoriIsu||''}</div>
       <div class="aduan-meta">
-        <span>📍 ${(a.lokasi||'').replace("Pusat Hemodialisis Darul Ta'zim ","PHDT ")}</span>
+        <span>📍 ${a.lokasi||''}</span>
         <span>👤 ${a.namaPengadu||''}</span>
-        <span>📅 ${a.tarikh||''}</span>
+        <span>📅 ${a.tarikh||''} ${a.masa||''}</span>
       </div>
-      ${a.catatan?`<div style="font-size:12px;color:#64748b;margin-top:3px;">${(a.catatan||'').substring(0,65)}${(a.catatan||'').length>65?'...':''}</div>`:''}
-      ${a.teknisyen?`<div style="font-size:11px;color:#1a4fa0;margin-top:3px;font-weight:600;">🔧 ${a.teknisyen}</div>`:''}
       ${imgs}
-      <div style="margin-top:8px;">
-        <button class="btn-sm btn-sm-green" style="font-size:11px;padding:6px 12px;" onclick="pdfSatuAduan('${a.noAduan}')">⬇ PDF + Gambar</button>
+      ${aksiPanel}
+      <div style="margin-top:8px;display:flex;gap:6px;">
+        <button class="btn-sm btn-sm-green" style="font-size:11px;padding:6px 12px;" onclick="pdfSatuAduan('${a.noAduan}')">⬇ PDF</button>
       </div>
     </div>`;
   };
 
-  let html = aktifList.map(buatKad).join('');
-
-  // Selesai — dilipat dalam accordion
-  if(selesaiList.length > 0 && (window._filterAktif||'semua') !== 'selesai'){
-    html += `
-      <button class="selesai-toggle" onclick="toggleSelesai()">
-        <div class="selesai-toggle-label">
-          <span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;"></span>
-          Selesai (${selesaiList.length} aduan)
-        </div>
-        <span class="selesai-toggle-arrow" id="selesaiArrow">▼</span>
-      </button>
-      <div class="selesai-collapsed" id="selesaiBody">
-        ${selesaiList.map(buatKad).join('')}
-      </div>`;
-  } else if((window._filterAktif||'semua') === 'selesai'){
-    html += selesaiList.map(buatKad).join('');
-  }
-
-  c.innerHTML = html;
+  c.innerHTML=ditapis.map(buatKad).join('');
 };
 
-// ── RENDER TINDAKAN — Workflow Baharu ────────────────────
+
+// ── RENDER TINDAKAN — hanya Ditugaskan & aktif ────────────
 const renderTindakan=()=>{
-  const aktif  = aduanData.filter(a=>a.status!=='Selesai');
+  const aktif  = aduanData.filter(a=>a.status==='Ditugaskan'||a.status==='Dalam Proses'||a.status==='Tangguh');
   const selesai= aduanData.filter(a=>a.status==='Selesai');
   document.getElementById('tindakanCount').textContent=aktif.length+' aduan';
   const c=document.getElementById('tindakanList');
@@ -1411,12 +1357,34 @@ window.tutupLightbox=()=>document.getElementById('lightbox').classList.remove('s
 
 const resetBorang=()=>{
   ['f_nama'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  ['f_jawatan','f_lokasi'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f_jawatan','f_lokasi','f_keutamaan'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('f_tarikh').value=new Date().toISOString().split('T')[0];
-  isuGambar={};
-  isuCount=0;
-  const container=document.getElementById('isuContainer');
-  if(container){container.innerHTML='';tambahIsu();}
+  document.getElementById('f_masa').value=new Date().toTimeString().slice(0,5);
+  document.querySelectorAll('input[name="kat_borang"]').forEach(cb=>cb.checked=false);
+  document.getElementById('imgGrid').innerHTML='';
+  document.getElementById('uploadTxt').textContent='Ketik untuk pilih gambar';
+  document.getElementById('fileUp').value='';
+  gambarFiles=[];
+};
+
+// ── TERIMA ADUAN → status: Ditugaskan ────────────────────
+window.terimaAduan=async(key)=>{
+  const keutamaanBaru=document.getElementById('keutamaan_edit_'+key)?.value||null;
+  const updates={status:'Ditugaskan',tarikhDiterima:new Date().toLocaleDateString('ms-MY')};
+  if(keutamaanBaru) updates.keutamaan=keutamaanBaru;
+  try{
+    await update(ref(db,'aduan/'+key),updates);
+    toast('Aduan diterima — dipindahkan ke Tab Tindakan','success');
+  }catch(err){toast('Gagal: '+err.message,'error');}
+};
+
+// ── TOLAK ADUAN ───────────────────────────────────────────
+window.tolakAduan=async(key)=>{
+  const sebab=document.getElementById('sebab_tolak_'+key)?.value||'';
+  try{
+    await update(ref(db,'aduan/'+key),{status:'Ditolak',sebabTolak:sebab,tarikhDitolak:new Date().toLocaleDateString('ms-MY')});
+    toast('Aduan ditolak','warn');
+  }catch(err){toast('Gagal: '+err.message,'error');}
 };
 
 // eksportCSV handled via window._eksportCSV above
@@ -1425,19 +1393,16 @@ function setConn(s,l){document.getElementById('connDot').className='conn-dot '+s
 function toast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast t-'+(type||'info')+' show';setTimeout(()=>t.classList.remove('show'),4500);}
 window.toast=toast;
 
-// Daftarkan semua fungsi modul supaya boleh dipanggil dari script biasa
 window._renderDashboard  = ()=>renderDashboard();
 window._renderTindakan   = ()=>renderTindakan();
 window._renderSenarai    = ()=>renderSenarai();
 window._simpanTindakan   = (key,i)=>simpanTindakan(key,i);
 window._tandakanSelesai  = (key,i)=>tandakanSelesai(key,i);
+window._terimaAduan      = key=>terimaAduan(key);
+window._tolakAduan       = key=>tolakAduan(key);
 window._pdfSatuAduan     = noAduan=>pdfSatuAduan(noAduan);
 window._pdfSemuaAduan    = ()=>pdfSemuaAduan();
 window._eksportCSV       = ()=>eksportCSV2();
-window._tambahIsu        = ()=>tambahIsu();
-window._buangIsu         = id=>buangIsu(id);
-window._piliGambarIsu    = (input,id)=>piliGambarIsu(input,id);
-window._buangGambarIsu   = (id,idx)=>buangGambarIsu(id,idx);
 
 const eksportCSV2=()=>{
   if(!aduanData.length){toast('Tiada data.','info');return;}
