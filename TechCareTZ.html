@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>TechCareTZ — True Zeal Sdn. Bhd.</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%231a4fa0'/><path d='M65 20c-8 0-14 6-14 14 0 2 .4 4 1 5.7L30 62c-1.7-.6-3.5-1-5.5-1C16 61 10 67 10 75s6 14 14.5 14c8 0 14.5-6 14.5-14 0-2-.4-4-1-5.7L60 47c1.7.6 3.5 1 5.5 1C74 48 80 42 80 34s-6-14-15-14zm0 8c3.3 0 6 2.7 6 6s-2.7 6-6 6-6-2.7-6-6 2.7-6 6-6zM24.5 75c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z' fill='%23f5c518'/><rect x='42' y='58' width='6' height='22' rx='3' fill='%23f5c518' transform='rotate(-45 45 69)'/></svg>">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f0f4f8;min-height:100vh;}
+.app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:#f0f4f8;}
+.topbar{background:#1a4fa0;padding:12px 16px 10px;display:flex;align-items:center;gap:10px;flex-shrink:0;position:sticky;top:0;z-index:50;}
+.logo-img{width:38px;height:38px;border-radius:50%;background:#fff;object-fit:contain;padding:2px;flex-shrink:0;}
+.topbar-text{flex:1;}
+.topbar-title{font-size:16px;font-weight:700;color:#fff;}
+.topbar-sub{font-size:10px;color:rgba(255,255,255,0.75);}
+.conn-pill{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.15);padding:4px 10px;border-radius:20px;}
+.conn-dot{width:6px;height:6px;border-radius:50%;background:#94a3b8;}
+.conn-dot.green{background:#10b981;}.conn-dot.spin{background:#f5c518;animation:blink 1s infinite;}.conn-dot.red{background:#ef4444;}
+.conn-text{font-size:10px;color:#fff;font-weight:600;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.tabs-bar{background:#fff;border-bottom:1px solid rgba(0,0,0,0.08);display:flex;position:sticky;top:60px;z-index:40;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tabs-bar::-webkit-scrollbar{display:none;}
+.tab-btn{flex:1 0 auto;padding:12px 8px;font-size:10px;font-weight:600;color:#94a3b8;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:inherit;white-space:nowrap;min-width:68px;text-align:center;}
+.tab-btn.active{color:#1a4fa0;}
+.tab-btn svg{display:block;margin:0 auto;}
+.tab-ink{width:28px;height:2.5px;border-radius:2px;background:transparent;margin:0 auto;}
+.tab-btn.active .tab-ink{background:#f5c518;}
+.content{flex:1;padding:12px 14px 100px;overflow-y:auto;}
+.content.hidden{display:none;}
+.card{background:#fff;border-radius:14px;border:.5px solid rgba(0,0,0,0.08);padding:14px;margin-bottom:12px;position:relative;}
+.card-title{font-size:11px;font-weight:700;color:#1a4fa0;text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px;padding-bottom:8px;border-bottom:.5px solid rgba(0,0,0,0.07);}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:11px;font-weight:600;color:#64748b;margin-bottom:4px;}
+.field input,.field select,.field textarea{width:100%;padding:12px 13px;border:.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:15px;font-family:inherit;background:#fff;color:#1a1a1a;-webkit-appearance:none;appearance:none;}
+.field textarea{resize:none;min-height:90px;line-height:1.5;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#1a4fa0;box-shadow:0 0 0 3px rgba(26,79,160,.1);}
+.field input.err,.field select.err,.field textarea.err{border-color:#ef4444;background:#fff5f5;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a4fa0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:38px;}
+.email-hint{font-size:10px;color:#94a3b8;margin-top:3px;padding-left:2px;}
+.no-pill{display:inline-flex;align-items:center;gap:6px;background:#e6f1fb;padding:5px 12px;border-radius:20px;margin-bottom:14px;}
+.no-pill span{font-size:12px;font-weight:700;color:#1a4fa0;}
+.no-dot{width:6px;height:6px;border-radius:50%;background:#10b981;}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;}
+.b-blue{background:#e6f1fb;color:#0c447c;}.b-yellow{background:#fef3cd;color:#633806;}
+.b-green{background:#d1fae5;color:#065f46;}.b-red{background:#fee2e2;color:#7f1d1d;}
+.b-gray{background:#f1f5f9;color:#5f5e5a;}
+.btn{width:100%;padding:14px;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn-yellow{background:#f5c518;color:#1a1a1a;}
+.btn-blue{background:#1a4fa0;color:#fff;}
+.btn-outline{background:#fff;color:#1a4fa0;border:1.5px solid #1a4fa0;}
+.btn-sm{padding:8px 14px;font-size:12px;border-radius:9px;font-weight:600;font-family:inherit;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
+.btn-sm-blue{background:#1a4fa0;color:#fff;}
+.btn-sm-outline{background:#fff;color:#1a4fa0;border:1px solid #1a4fa0;}
+.btn-sm-green{background:#059669;color:#fff;}
+.divider{height:.5px;background:rgba(0,0,0,0.07);margin:12px 0;}
+.upload-box{border:1.5px dashed rgba(0,0,0,0.18);border-radius:10px;padding:16px;text-align:center;cursor:pointer;font-size:12px;color:#64748b;transition:all .15s;}
+.upload-box:active,.upload-box:hover{background:#f0f6ff;border-color:#1a4fa0;}
+input[type=file]{display:none;}
+.img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+.img-item{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;border:.5px solid rgba(0,0,0,0.1);}
+.img-item img{width:100%;height:100%;object-fit:cover;}
+.img-item .rm-btn{position:absolute;top:4px;right:4px;width:22px;height:22px;background:rgba(220,38,38,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#fff;font-size:13px;line-height:1;}
+.aduan-card{background:#fff;border-radius:12px;border:.5px solid rgba(0,0,0,0.08);padding:13px 14px;margin-bottom:8px;}
+.aduan-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.aduan-no{font-size:11px;font-weight:700;color:#1a4fa0;}
+.aduan-kat{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:5px;}
+.aduan-meta{font-size:11px;color:#64748b;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;}
+.img-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.img-thumb{width:58px;height:58px;border-radius:8px;object-fit:cover;border:.5px solid rgba(0,0,0,0.1);cursor:pointer;}
+.tindakan-card{background:#fff;border-radius:12px;border:.5px solid rgba(0,0,0,0.08);padding:13px 14px;margin-bottom:10px;}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.metric{background:#fff;border-radius:12px;padding:14px 12px;border:.5px solid rgba(0,0,0,0.07);}
+.metric-lbl{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.metric-val{font-size:26px;font-weight:700;}
+.metric-sub{font-size:10px;color:#64748b;margin-top:2px;}
+.overlay{position:absolute;inset:0;background:rgba(255,255,255,.92);border-radius:14px;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:13px;font-weight:600;color:#1a4fa0;z-index:10;}
+.overlay.show{display:flex;}
+.overlay-sub{font-size:11px;color:#64748b;font-weight:400;}
+.spin{width:24px;height:24px;border:2.5px solid #e6f1fb;border-top-color:#1a4fa0;border-radius:50%;animation:rot .7s linear infinite;}
+@keyframes rot{to{transform:rotate(360deg)}}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sec-lbl{font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;}
+.empty{text-align:center;padding:40px 20px;color:#94a3b8;font-size:13px;line-height:1.7;}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+.lightbox.show{display:flex;}
+.lightbox img{max-width:95%;max-height:80vh;border-radius:10px;object-fit:contain;}
+.lb-close{color:#fff;font-size:13px;font-weight:600;padding:9px 22px;background:rgba(255,255,255,.15);border-radius:20px;cursor:pointer;border:none;font-family:inherit;}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(16px);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;color:#fff;z-index:9999;opacity:0;transition:all .25s;pointer-events:none;max-width:340px;text-align:center;line-height:1.4;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.t-success{background:#059669;}.t-error{background:#dc2626;}.t-info{background:#1a4fa0;}.t-warn{background:#d97706;}
+.chart-wrap{position:relative;width:100%;}
+.notif-banner{background:#e6f1fb;border:1px solid #bfdbfe;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#1e40af;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.talian-card{background:#fff;border-radius:14px;border:.5px solid rgba(0,0,0,0.08);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;text-decoration:none;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.talian-card:active{background:#f0f6ff;transform:scale(0.98);}
+.talian-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;}
+.talian-icon.biru{background:#e6f1fb;}
+.talian-icon.merah{background:#fee2e2;}
+.talian-icon.hijau{background:#d1fae5;}
+.talian-icon.kuning{background:#fef3cd;}
+.talian-info{flex:1;}
+.talian-nama{font-size:14px;font-weight:700;color:#1a1a1a;margin-bottom:2px;}
+.talian-no{font-size:16px;font-weight:700;color:#1a4fa0;letter-spacing:.5px;}
+.talian-label{font-size:10px;color:#94a3b8;margin-top:1px;}
+.talian-dial{width:40px;height:40px;background:#1a4fa0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.talian-section-lbl{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin:14px 0 8px;padding-left:2px;}
+.darurat-banner{background:#fee2e2;border:1px solid #fca5a5;border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.darurat-banner-text{font-size:12px;font-weight:600;color:#7f1d1d;line-height:1.5;}
+.filter-btn{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;font-family:inherit;border:1.5px solid rgba(0,0,0,0.1);background:#fff;color:#64748b;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.filter-btn.active{background:#1a4fa0;color:#fff;border-color:#1a4fa0;}
+.filter-btn:active{opacity:.8;}
+.selesai-toggle{width:100%;background:#f8fafc;border:.5px solid rgba(0,0,0,0.08);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:8px;font-family:inherit;border:none;}
+.selesai-toggle-label{font-size:12px;font-weight:700;color:#64748b;display:flex;align-items:center;gap:8px;}
+.selesai-toggle-arrow{font-size:12px;color:#94a3b8;transition:transform .2s;}
+.selesai-toggle-arrow.open{transform:rotate(180deg);}
+.selesai-collapsed{display:none;}
+.selesai-collapsed.show{display:block;}
+
+/* ── PANEL TINDAKAN BAHARU ── */
+.tk-card{background:#fff;border-radius:14px;border:.5px solid rgba(0,0,0,0.08);margin-bottom:12px;overflow:hidden;transition:all .2s;}
+.tk-header{padding:13px 14px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;}
+.tk-header-info{flex:1;}
+.tk-no{font-size:10px;font-weight:700;color:#1a4fa0;margin-bottom:2px;}
+.tk-kat{font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:3px;}
+.tk-meta{font-size:11px;color:#64748b;display:flex;flex-wrap:wrap;gap:6px;}
+.tk-status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.tk-body{padding:0 14px 14px;border-top:.5px solid rgba(0,0,0,0.06);}
+.tk-gambar-row{display:flex;gap:6px;margin:10px 0 6px;}
+.tk-img{width:52px;height:52px;border-radius:8px;object-fit:cover;border:.5px solid rgba(0,0,0,0.1);cursor:pointer;}
+.tk-pengadu-info{background:#f0fdf4;border-radius:8px;padding:8px 10px;margin:10px 0;font-size:11px;color:#065f46;display:flex;align-items:center;gap:6px;}
+.tk-pengadu-info.tiada{background:#f8fafc;color:#94a3b8;}
+.tk-juruteknik{width:100%;padding:10px 13px;border:.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a4fa0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:38px;margin-bottom:10px;}
+.tk-juruteknik:focus{outline:none;border-color:#1a4fa0;box-shadow:0 0 0 3px rgba(26,79,160,.1);}
+.tk-status-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px;}
+.tk-status-btn{padding:10px 8px;border-radius:10px;font-size:12px;font-weight:700;font-family:inherit;border:1.5px solid transparent;cursor:pointer;text-align:center;transition:all .15s;line-height:1.3;}
+.tk-status-btn:active{transform:scale(0.97);}
+.tk-btn-hubungi{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;}
+.tk-btn-hubungi.aktif{background:#1d4ed8;color:#fff;border-color:#1d4ed8;}
+.tk-btn-dalamproses{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;}
+.tk-btn-dalamproses.aktif{background:#1d4ed8;color:#fff;border-color:#1d4ed8;}
+.tk-btn-masa{background:#fefce8;color:#854d0e;border-color:#fde68a;}
+.tk-btn-masa.aktif{background:#d97706;color:#fff;border-color:#d97706;}
+.tk-btn-tangguh{background:#fff1f2;color:#be123c;border-color:#fecdd3;}
+.tk-btn-tangguh.aktif{background:#dc2626;color:#fff;border-color:#dc2626;}
+.tk-btn-selesai{background:#f0fdf4;color:#15803d;border-color:#bbf7d0;}
+.tk-btn-selesai.aktif{background:#059669;color:#fff;border-color:#059669;}
+.tk-masa-fields{background:#fffbeb;border-radius:10px;padding:10px;margin-bottom:10px;display:none;}
+.tk-masa-fields.show{display:block;}
+.tk-masa-fields label{font-size:11px;font-weight:600;color:#92400e;margin-bottom:4px;display:block;}
+.tk-masa-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tk-masa-input{width:100%;padding:9px 10px;border:.5px solid #fde68a;border-radius:8px;font-size:13px;font-family:inherit;background:#fff;color:#1a1a1a;}
+.tk-masa-input:focus{outline:none;border-color:#d97706;}
+.tk-catatan{width:100%;padding:10px 12px;border:.5px solid rgba(0,0,0,0.12);border-radius:10px;font-size:13px;font-family:inherit;resize:none;min-height:70px;line-height:1.5;background:#fff;color:#1a1a1a;margin-bottom:10px;}
+.tk-catatan:focus{outline:none;border-color:#1a4fa0;box-shadow:0 0 0 3px rgba(26,79,160,.1);}
+.tk-simpan{width:100%;padding:12px;border-radius:10px;background:#1a4fa0;color:#fff;font-size:14px;font-weight:700;font-family:inherit;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.tk-simpan:active{opacity:.85;}
+.tk-selesai-card{background:#fff;border-radius:12px;border:.5px solid rgba(0,0,0,0.07);padding:12px 14px;margin-bottom:8px;border-left:3px solid #10b981;opacity:.8;}
+.tk-empty{text-align:center;padding:40px 20px;color:#94a3b8;font-size:13px;line-height:1.7;}
+.isu-item{background:#f8fafc;border:.5px solid rgba(0,0,0,0.1);border-radius:12px;padding:12px;margin-bottom:10px;position:relative;}
+.isu-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.isu-label{font-size:11px;font-weight:700;color:#1a4fa0;background:#e6f1fb;padding:3px 10px;border-radius:20px;}
+.isu-remove{width:26px;height:26px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;color:#dc2626;font-size:15px;line-height:1;}
+.kat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px;}
+.kat-cb{display:none;}
+.kat-lbl{display:flex;flex-direction:column;padding:8px 10px;border-radius:9px;border:1.5px solid rgba(0,0,0,0.1);background:#fff;cursor:pointer;transition:all .15s;line-height:1.3;}
+.kat-lbl:active{transform:scale(.98);}
+.kat-cb:checked + .kat-lbl{background:#e6f1fb;border-color:#1a4fa0;color:#1a4fa0;}
+.kat-lbl-name{font-size:12px;font-weight:700;color:inherit;}
+.kat-lbl-hint{font-size:10px;color:#94a3b8;margin-top:2px;font-weight:400;}
+.kat-cb:checked + .kat-lbl .kat-lbl-hint{color:#3b82f6;}
+.footer-bar{background:#1a4fa0;padding:12px 16px;text-align:center;flex-shrink:0;}
+.footer-text{font-size:11px;color:rgba(255,255,255,0.7);}
+.footer-text span{color:#f5c518;font-weight:700;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <img class="logo-img" src="" id="logoImg" alt="TZ" onerror="this.style.display='none'">
+    <div class="topbar-text">
+      <div class="topbar-title">TechCareTZ</div>
+      <div class="topbar-sub">True Zeal Sdn. Bhd. · 544838-H</div>
+    </div>
+    <div class="conn-pill">
+      <div class="conn-dot spin" id="connDot"></div>
+      <div class="conn-text" id="connText">Menyambung...</div>
+    </div>
+  </div>
+
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="showTab('talian',0)" id="nav0">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      Talian<div class="tab-ink"></div>
+    </button>
+    <button class="tab-btn" onclick="showTab('aduan',1)" id="nav1">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Borang<div class="tab-ink"></div>
+    </button>
+    <button class="tab-btn" onclick="showTab('senarai',2)" id="nav2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Senarai<div class="tab-ink"></div>
+    </button>
+    <button class="tab-btn" onclick="showTab('tindakan',3)" id="nav3">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      Tindakan<div class="tab-ink"></div>
+    </button>
+    <button class="tab-btn" onclick="showTab('dashboard',4)" id="nav4">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard<div class="tab-ink"></div>
+    </button>
+  </div>
+
+  <!-- TALIAN TEKNIKAL -->
+  <div class="content" id="tab-talian">
+    <div class="darurat-banner">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" style="flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div class="darurat-banner-text">Tekan pada kad untuk membuat panggilan terus. Gunakan hanya dalam kes kecemasan atau keperluan segera.</div>
+    </div>
+
+    <div class="talian-section-lbl">Utiliti & Infrastruktur</div>
+
+    <a href="tel:074556940" class="talian-card">
+      <div class="talian-icon biru">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a4fa0" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div class="talian-info">
+        <div class="talian-nama">SAJ Holdings</div>
+        <div class="talian-no">07-455 6940</div>
+        <div class="talian-label">Bekalan Air & Perpaipan</div>
+      </div>
+      <div class="talian-dial">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+    </a>
+
+    <a href="tel:1300885454" class="talian-card">
+      <div class="talian-icon kuning">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#854f0b" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div class="talian-info">
+        <div class="talian-nama">TNB</div>
+        <div class="talian-no">1300 88 5454</div>
+        <div class="talian-label">Bekalan Elektrik</div>
+      </div>
+      <div class="talian-dial">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+    </a>
+
+    <a href="tel:100" class="talian-card">
+      <div class="talian-icon biru">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a4fa0" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div class="talian-info">
+        <div class="talian-nama">TM (Telekom)</div>
+        <div class="talian-no">100</div>
+        <div class="talian-label">Talian & Internet</div>
+      </div>
+      <div class="talian-dial">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+    </a>
+
+    <div class="talian-section-lbl">Juruteknik Mesin & Peralatan</div>
+
+    <a href="tel:0129758331" class="talian-card">
+      <div class="talian-icon hijau">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div class="talian-info">
+        <div class="talian-nama">En. Sam</div>
+        <div class="talian-no">012-975 8331</div>
+        <div class="talian-label">Nipro — Juruteknik Mesin</div>
+      </div>
+      <div class="talian-dial">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+    </a>
+
+    <a href="tel:0123995022" class="talian-card">
+      <div class="talian-icon hijau">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#065f46" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div class="talian-info">
+        <div class="talian-nama">En. Tan</div>
+        <div class="talian-no">012-399 5022</div>
+        <div class="talian-label">Nipro — Juruteknik Mesin</div>
+      </div>
+      <div class="talian-dial">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+    </a>
+
+    <a href="tel:0166598807" class="talian-card">
+      <div class="talian-icon merah">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#991b1b" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div class="talian-info">
+        <div class="talian-nama">En. Khidir</div>
+        <div class="talian-no">016-659 8807</div>
+        <div class="talian-label">KSSE — Juruteknik</div>
+      </div>
+      <div class="talian-dial">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+    </a>
+
+    <a href="tel:0173643074" class="talian-card">
+      <div class="talian-icon merah">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#991b1b" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div class="talian-info">
+        <div class="talian-nama">En. Razif</div>
+        <div class="talian-no">017-364 3074</div>
+        <div class="talian-label">Renatron — Juruteknik Mesin</div>
+      </div>
+      <div class="talian-dial">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.61 4.38 2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l1.08-.98a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- BORANG -->
+  <div class="content hidden" id="tab-aduan">
+    <div class="card" id="cardBorang">
+      <div class="overlay" id="loadBorang">
+        <div class="spin"></div>
+        <div id="loadMsg">Menghantar aduan...</div>
+        <div class="overlay-sub" id="loadSub">Sila tunggu sebentar</div>
+      </div>
+      <div class="card-title">Borang Aduan Kerosakan</div>
+      <div class="no-pill"><div class="no-dot"></div><span id="noAduan">ADU-2026-0001</span></div>
+
+      <!-- Maklumat Pengadu -->
+      <div class="field"><label>Nama Pengadu *</label><input type="text" id="f_nama" placeholder="Nama penuh anda"></div>
+      <div class="field-row">
+        <div class="field"><label>Jawatan *</label>
+          <select id="f_jawatan"><option value="">Pilih jawatan</option><option>Pentadbiran</option><option>Staf Jururawat</option><option>Unit Teknikal</option></select>
+        </div>
+        <div class="field"><label>Tarikh *</label><input type="date" id="f_tarikh"></div>
+      </div>
+      <div class="field"><label>Lokasi *</label>
+        <select id="f_lokasi"><option value="">Pilih lokasi</option><option>HQ True Zeal</option><option>PHDT Parit Raja</option><option>PHDT Batu Pahat</option><option>Kedai LS</option></select>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Senarai Isu -->
+      <div style="font-size:11px;font-weight:700;color:#1a4fa0;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+        <span>📋 Senarai Isu</span>
+        <span id="isuKiraan" style="background:#e6f1fb;padding:2px 10px;border-radius:20px;font-size:11px;">1 isu</span>
+      </div>
+
+      <div id="isuContainer"></div>
+
+      <!-- Butang Tambah Isu -->
+      <button onclick="tambahIsu()" style="width:100%;padding:11px;border-radius:10px;background:#f0f6ff;color:#1a4fa0;font-size:13px;font-weight:700;font-family:inherit;border:1.5px dashed #93c5fd;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:14px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Tambah Isu Lain
+      </button>
+
+      <div class="divider"></div>
+      <button class="btn btn-yellow" id="btnHantar" onclick="hantarAduan()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Hantar Laporan Aduan
+      </button>
+    </div>
+  </div>
+
+  <!-- SENARAI -->
+  <div class="content hidden" id="tab-senarai">
+    <div class="sec-hd">
+      <div class="sec-lbl">Semua Aduan</div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-sm btn-sm-outline" onclick="eksportCSV()">⬇ CSV</button>
+        <button class="btn-sm btn-sm-green" onclick="pdfSemuaAduan()">⬇ PDF</button>
+      </div>
+    </div>
+    <!-- Filter tabs -->
+    <div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;">
+      <button class="filter-btn active" id="f-semua" onclick="setFilter('semua')">Semua</button>
+      <button class="filter-btn" id="f-baru" onclick="setFilter('baru')">🔴 Baru</button>
+      <button class="filter-btn" id="f-proses" onclick="setFilter('proses')">🟡 Dalam Proses</button>
+      <button class="filter-btn" id="f-tangguh" onclick="setFilter('tangguh')">⚠ Tangguh</button>
+      <button class="filter-btn" id="f-selesai" onclick="setFilter('selesai')">✅ Selesai</button>
+    </div>
+    <!-- Kiraan ringkas -->
+    <div id="senaraiKiraan" style="font-size:11px;color:#64748b;margin-bottom:10px;"></div>
+    <div id="senaraiList"><div class="empty">Memuatkan data...</div></div>
+  </div>
+
+  <!-- TINDAKAN -->
+  <div class="content hidden" id="tab-tindakan">
+    <div class="sec-hd">
+      <div class="sec-lbl">Perlu Tindakan</div>
+      <div id="tindakanCount" style="font-size:11px;font-weight:700;color:#1a4fa0;background:#e6f1fb;padding:3px 10px;border-radius:20px;">0 aduan</div>
+    </div>
+    <div id="tindakanList"><div class="empty">Memuatkan data...</div></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="content hidden" id="tab-dashboard">
+    <div class="metric-grid">
+      <div class="metric"><div class="metric-lbl">Jumlah Aduan</div><div class="metric-val" style="color:#1a4fa0;" id="mJ">0</div><div class="metric-sub">Semua rekod</div></div>
+      <div class="metric"><div class="metric-lbl">Selesai</div><div class="metric-val" style="color:#059669;" id="mS">0</div><div class="metric-sub" id="mPc">0% kadar</div></div>
+      <div class="metric"><div class="metric-lbl">Dalam Proses</div><div class="metric-val" style="color:#d97706;" id="mP">0</div><div class="metric-sub">Sedang ditangani</div></div>
+      <div class="metric"><div class="metric-lbl">Tangguh/Baru</div><div class="metric-val" style="color:#dc2626;" id="mT">0</div><div class="metric-sub">Perlu perhatian</div></div>
+    </div>
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-title">Aduan mengikut kategori</div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="chart1" role="img" aria-label="Carta bar">Carta</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Status kerja</div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="chart2" role="img" aria-label="Carta donut">Carta</canvas></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-bar">
+    <div class="footer-text">© 2026 <span>True Zeal Sdn. Bhd.</span> · <span>TechCareTZ</span></div>
+    <div class="footer-text" style="margin-top:2px;font-size:10px;">Sistem Pengurusan Aduan Unit Teknikal</div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="tutupLightbox()">
+  <img id="lbImg" src="" alt="Gambar">
+  <button class="lb-close">Tutup</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+// Fungsi navigasi tab — load AWAL sebelum module Firebase
+function showTab(t, idx) {
+  var tabs = ['talian','aduan','senarai','tindakan','dashboard'];
+  tabs.forEach(function(id) {
+    var el = document.getElementById('tab-' + id);
+    if (el) el.classList.toggle('hidden', id !== t);
+  });
+  for (var i = 0; i < 5; i++) {
+    var nav = document.getElementById('nav' + i);
+    if (nav) nav.classList.toggle('active', i === idx);
+  }
+  if (t === 'dashboard' && typeof window._renderDashboard === 'function') window._renderDashboard();
+  if (t === 'tindakan' && typeof window._renderTindakan === 'function') window._renderTindakan();
+}
+
+function setFilter(f) {
+  window._filterAktif = f;
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  var el = document.getElementById('f-' + f);
+  if (el) el.classList.add('active');
+  if (typeof window._renderSenarai === 'function') window._renderSenarai();
+}
+
+function toggleSelesai() {
+  var body = document.getElementById('selesaiBody');
+  var arrow = document.getElementById('selesaiArrow');
+  if (body) { body.classList.toggle('show'); if(arrow) arrow.classList.toggle('open'); }
+}
+
+function toggleTkCard(i) {
+  var body = document.getElementById('tkbody_' + i);
+  var arrow = document.getElementById('tkarrow_' + i);
+  if (!body) return;
+  var terbuka = body.style.display !== 'none';
+  document.querySelectorAll('[id^="tkbody_"]').forEach(function(el){ el.style.display = 'none'; });
+  document.querySelectorAll('[id^="tkarrow_"]').forEach(function(el){ el.textContent = '▼'; });
+  if (!terbuka) { body.style.display = 'block'; if(arrow) arrow.textContent = '▲'; }
+}
+
+function pilihStatus(i, status) {
+  ['dalamproses','tangguh'].forEach(function(s){
+    var btn = document.querySelector('#tkbody_' + i + ' .tk-btn-' + s);
+    if (btn) btn.classList.remove('aktif');
+  });
+  var map = {'Dalam Proses':'dalamproses','Tangguh':'tangguh'};
+  var btn2 = document.querySelector('#tkbody_' + i + ' .tk-btn-' + map[status]);
+  if (btn2) btn2.classList.add('aktif');
+}
+
+function bukaLightbox(url) {
+  var img = document.getElementById('lbImg');
+  var lb = document.getElementById('lightbox');
+  if (img) img.src = url;
+  if (lb) lb.classList.add('show');
+}
+
+function tutupLightbox() {
+  var lb = document.getElementById('lightbox');
+  if (lb) lb.classList.remove('show');
+}
+
+function simpanTindakan(key, i) {
+  if (typeof window._simpanTindakan === 'function') window._simpanTindakan(key, i);
+}
+
+function tandakanSelesai(key, i) {
+  if (typeof window._tandakanSelesai === 'function') window._tandakanSelesai(key, i);
+}
+
+function tambahIsu() {
+  if (typeof window._tambahIsu === 'function') window._tambahIsu();
+}
+
+function buangIsu(id) {
+  if (typeof window._buangIsu === 'function') window._buangIsu(id);
+}
+
+function piliGambarIsu(input, id) {
+  if (typeof window._piliGambarIsu === 'function') window._piliGambarIsu(input, id);
+}
+
+function buangGambarIsu(id, idx) {
+  if (typeof window._buangGambarIsu === 'function') window._buangGambarIsu(id, idx);
+}
+
+function pdfSatuAduan(noAduan) {
+  if (typeof window._pdfSatuAduan === 'function') window._pdfSatuAduan(noAduan);
+}
+
+function pdfSemuaAduan() {
+  if (typeof window._pdfSemuaAduan === 'function') window._pdfSemuaAduan();
+}
+
+function eksportCSV() {
+  if (typeof window._eksportCSV === 'function') window._eksportCSV();
+}
+</script>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, push, onValue, update } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// ═══════════════════════════════════════════════
+// KONFIGURASI
+// ═══════════════════════════════════════════════
+const IMGBB_KEY       = 'b95a32313258e9301a139798d00adcf0';
+const W3F_KEY         = '9685dd91-a403-4ccf-a014-a268a7e8c82c'; // Web3Forms
+const EMAIL_TEKNIKAL  = 'nabihan.tz@gmail.com';
+
+const FIREBASE = {
+  apiKey:"AIzaSyDm36mh04gtYGh_kI7apP9Y0ELWPrQ5dZE",
+  authDomain:"techcaretz-279fa.firebaseapp.com",
+  databaseURL:"https://techcaretz-279fa-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"techcaretz-279fa",
+  storageBucket:"techcaretz-279fa.firebasestorage.app",
+  messagingSenderId:"1017759542732",
+  appId:"1:1017759542732:web:aa6ee117edc51c6c1e4169"
+};
+
+const JURUTEKNIK = [
+  'Juruteknik TZ','Juruteknik SAJ','Juruteknik TNB','Juruteknik TM',
+  'Pendawai Elektrik','Tukang Paip','Juruteknik Penyaman Udara',
+  'Juruteknik Mesin RO','Juruteknik Mesin Renatron'
+];
+// ═══════════════════════════════════════════════
+
+const app = initializeApp(FIREBASE);
+const db  = getDatabase(app);
+
+var aduanData=[], gambarFiles=[], c1=null, c2=null;
+
+setConn('spin','Menyambung...');
+document.getElementById('f_tarikh').value = new Date().toISOString().split('T')[0];
+// Tambah isu pertama secara automatik selepas module load
+setTimeout(()=>tambahIsu(), 200);
+
+onValue(ref(db,'aduan'), snap=>{
+  const data=snap.val(); aduanData=[];
+  if(data){ Object.keys(data).forEach(k=>aduanData.unshift(Object.assign({_key:k},data[k]))); aduanData.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)); }
+  kiraNo(); renderSenarai(); renderTindakan(); renderDashboard();
+  setConn('green','Firebase Disambung');
+}, ()=>{ setConn('red','Gagal Sambung'); toast('Gagal sambung Firebase','error'); });
+
+// Daftarkan fungsi modul ke window supaya script biasa boleh akses
+window._renderDashboard = ()=>renderDashboard();
+window._renderTindakan  = ()=>renderTindakan();
+window._renderSenarai   = ()=>renderSenarai();
+window._filterAktif     = 'semua';
+
+const kiraNo=()=>{ const yr=new Date().getFullYear(); const no='ADU-'+yr+'-'+String(aduanData.length+1).padStart(4,'0'); document.getElementById('noAduan').textContent=no; return no; };
+
+// ── MULTI-ISU BORANG ─────────────────────────────────────
+var isuCount = 0;
+var isuGambar = {}; // { isuId: [File, ...] }
+
+const KATEGORI_LIST = [
+  {val:'Elektrik',              hint:'Pendawaian, suis, fius, lampu, soket'},
+  {val:'Perpaipan',             hint:'Paip bocor, sinki, tandas, saliran'},
+  {val:'Internet / Rangkaian',  hint:'WiFi, LAN, router, sambungan lambat'},
+  {val:'Perkakasan IT',         hint:'Komputer, printer, skrin, tetikus'},
+  {val:'Perisian (Software)',   hint:'Sistem, aplikasi, error, virus'},
+  {val:'Penyaman Udara (HVAC)', hint:'Aircond, kipas, pengudaraan'},
+  {val:'Struktur Bangunan',     hint:'Dinding, bumbung, lantai, pintu'},
+  {val:'Keselamatan / Security',hint:'CCTV, kunci, akses kad, penggera'},
+  {val:'Perabot',               hint:'Meja, kerusi, almari, rak'},
+  {val:'Telekomunikasi',        hint:'Telefon, intercom, fax'},
+  {val:'Bekalan Air',           hint:'Air kotor, tiada air, tekanan rendah'},
+  {val:'Peralatan Klinikal',    hint:'Mesin dialisis, peralatan perubatan'},
+  {val:'Penyelenggaraan Umum',  hint:'Repair umum, preventive maintenance'}
+];
+
+const buatKatGrid = id => KATEGORI_LIST.map((k,i) =>
+  `<div>
+    <input class="kat-cb" type="checkbox" id="kat_${id}_${i}" name="kat_${id}" value="${k.val}">
+    <label class="kat-lbl" for="kat_${id}_${i}">
+      <span class="kat-lbl-name">${k.val}</span>
+      <span class="kat-lbl-hint">${k.hint}</span>
+    </label>
+  </div>`
+).join('');
+
+const buatIsuItem = (id, bolehBuang) => {
+  const div = document.createElement('div');
+  div.className = 'isu-item';
+  div.id = `isu_${id}`;
+  div.innerHTML = `
+    <div class="isu-header">
+      <span class="isu-label">Isu ${id}</span>
+      ${bolehBuang ? `<button class="isu-remove" onclick="buangIsu(${id})">×</button>` : ''}
+    </div>
+    <div class="field">
+      <label>Kategori Isu * <span style="font-size:10px;color:#94a3b8;font-weight:400;">(boleh pilih lebih dari 1)</span></label>
+      <div class="kat-grid" id="isu_kat_grid_${id}">${buatKatGrid(id)}</div>
+      <div id="isu_kat_err_${id}" style="font-size:11px;color:#ef4444;display:none;margin-top:4px;">⚠ Sila pilih sekurang-kurangnya satu kategori</div>
+    </div>
+    <div class="field">
+      <label>Penerangan Masalah *</label>
+      <textarea id="isu_cat_${id}" placeholder="Huraikan masalah dengan jelas..." style="min-height:80px;width:100%;padding:11px 13px;border:.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;font-family:inherit;resize:none;line-height:1.5;"></textarea>
+    </div>
+    <div class="field">
+      <label>Gambar Kerosakan (pilihan, maks 3)</label>
+      <div class="upload-box" style="padding:12px;" onclick="document.getElementById('isu_img_${id}').click()">
+        <input type="file" id="isu_img_${id}" accept="image/*" multiple onchange="piliGambarIsu(this,${id})">
+        <div id="isu_img_txt_${id}" style="font-size:12px;color:#94a3b8;">📷 Ketik untuk pilih gambar</div>
+      </div>
+      <div class="img-grid" id="isu_img_grid_${id}"></div>
+    </div>`;
+  return div;
+};
+
+window.tambahIsu = () => {
+  isuCount++;
+  const container = document.getElementById('isuContainer');
+  container.appendChild(buatIsuItem(isuCount, isuCount > 1));
+  document.getElementById('isuKiraan').textContent = isuCount + ' isu';
+};
+
+window.buangIsu = id => {
+  const el = document.getElementById('isu_'+id);
+  if(el) el.remove();
+  delete isuGambar[id];
+  // Kira semula
+  const baki = document.querySelectorAll('.isu-item').length;
+  document.getElementById('isuKiraan').textContent = baki + ' isu';
+};
+
+window.piliGambarIsu = (input, id) => {
+  const files = Array.from(input.files).slice(0,3);
+  isuGambar[id] = files;
+  const grid = document.getElementById('isu_img_grid_'+id);
+  const txt = document.getElementById('isu_img_txt_'+id);
+  grid.innerHTML = '';
+  if(txt) txt.textContent = files.length + ' gambar dipilih';
+  files.forEach((file,i) => {
+    const r = new FileReader();
+    r.onload = e => {
+      const item = document.createElement('div');
+      item.className = 'img-item';
+      item.innerHTML = `<img src="${e.target.result}" alt="p"><button class="rm-btn" onclick="buangGambarIsu(${id},${i})">×</button>`;
+      grid.appendChild(item);
+    };
+    r.readAsDataURL(file);
+  });
+};
+
+window.buangGambarIsu = (id, idx) => {
+  if(isuGambar[id]) isuGambar[id].splice(idx,1);
+  // Re-render grid
+  const grid = document.getElementById('isu_img_grid_'+id);
+  const txt = document.getElementById('isu_img_txt_'+id);
+  grid.innerHTML = '';
+  if(txt) txt.textContent = (isuGambar[id]?.length||0) > 0 ? isuGambar[id].length+' gambar dipilih' : '📷 Ketik untuk pilih gambar';
+  (isuGambar[id]||[]).forEach((file,i) => {
+    const r = new FileReader();
+    r.onload = e => {
+      const item = document.createElement('div');
+      item.className = 'img-item';
+      item.innerHTML = `<img src="${e.target.result}" alt="p"><button class="rm-btn" onclick="buangGambarIsu(${id},${i})">×</button>`;
+      grid.appendChild(item);
+    };
+    r.readAsDataURL(file);
+  });
+};
+
+// Legacy - kekalkan untuk compatibility
+window.piliGambar = input => {};
+
+const validasi = () => {
+  let ok = true;
+  const ids = ['f_nama','f_jawatan','f_lokasi'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('err');
+    if(!el.value.trim()){ el.classList.add('err'); ok = false; }
+  });
+  // Validasi setiap isu
+  const isuItems = document.querySelectorAll('.isu-item');
+  if(isuItems.length === 0){ toast('Sila tambah sekurang-kurangnya satu isu','error'); return false; }
+  isuItems.forEach(item => {
+    const id = item.id.replace('isu_','');
+    const checked = document.querySelectorAll(`input[name="kat_${id}"]:checked`);
+    const errEl = document.getElementById('isu_kat_err_'+id);
+    if(checked.length===0){ if(errEl)errEl.style.display='block'; ok=false; } else { if(errEl)errEl.style.display='none'; }
+    const cat = document.getElementById('isu_cat_'+id);
+    if(cat){ cat.style.border=''; if(!cat.value.trim()){ cat.style.border='1.5px solid #ef4444'; ok=false; } }
+  });
+  return ok;
+};
+
+const uploadGambar=async files=>{
+  const urls=[];
+  for(let i=0;i<files.length;i++){
+    const file=files[i];
+    document.getElementById('loadMsg').textContent=`Gambar ${i+1}/${files.length}...`;
+    document.getElementById('loadSub').textContent=file.name;
+    const b64=await f2b64(file); const form=new FormData();
+    form.append('image',b64.split(',')[1]); form.append('key',IMGBB_KEY);
+    try{ const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:form}); const json=await res.json(); if(json.success)urls.push({url:json.data.url,thumb:json.data.thumb.url,b64:b64}); }catch(e){}
+  }
+  return urls;
+};
+
+const f2b64=file=>new Promise((res,rej)=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.onerror=rej; r.readAsDataURL(file); });
+
+// Ambil gambar sebagai base64 dari URL (untuk PDF)
+const urlToB64=async url=>{
+  try{
+    const res=await fetch(url);
+    const blob=await res.blob();
+    return await f2b64(blob);
+  }catch(e){ return null; }
+};
+
+// ── HANTAR EMEL VIA WEB3FORMS ────────────────────────────
+const hantarEmel = async (subject, to, params) => {
+  try {
+    const body = {
+      access_key : W3F_KEY,
+      subject    : subject,
+      from_name  : 'TechCareTZ — True Zeal Sdn. Bhd.',
+      to         : to,           // ← FIELD BETUL untuk redirect emel
+      replyto    : EMAIL_TEKNIKAL,
+      message    : params.message || '',
+      'No. Aduan': params.no_aduan  || '-',
+      'Nama'     : params.nama      || '-',
+      'Lokasi'   : params.lokasi    || '-',
+      'Kategori' : params.kategori  || '-',
+      'Tarikh'   : params.tarikh    || '-',
+    };
+    if(params.teknisyen)        body['Juruteknik']      = params.teknisyen;
+    if(params.masa_datang)      body['Masa Kedatangan'] = params.masa_datang;
+    if(params.catatan)          body['Catatan']         = params.catatan;
+    if(params.tarikh_selesai)   body['Tarikh Selesai']  = params.tarikh_selesai;
+
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method  : 'POST',
+      headers : { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body    : JSON.stringify(body)
+    });
+    const data = await res.json();
+    console.log('Web3Forms →', to, ':', data.success, data.message||'');
+    return data.success === true;
+  } catch(err) {
+    console.error('Emel gagal:', err);
+    return false;
+  }
+};
+
+// ── HANTAR ADUAN (MULTI-ISU) ─────────────────────────────
+window.hantarAduan=async()=>{
+  if(!validasi()){toast('Sila isi semua medan wajib *','error');return;}
+  const no=kiraNo();
+  document.getElementById('loadBorang').classList.add('show');
+  document.getElementById('btnHantar').disabled=true;
+
+  const isuItems=document.querySelectorAll('.isu-item');
+  const senaraIsu=[];
+
+  for(let i=0;i<isuItems.length;i++){
+    const id=isuItems[i].id.replace('isu_','');
+    const checked=Array.from(document.querySelectorAll(`input[name="kat_${id}"]:checked`)).map(cb=>cb.value);
+    const kategori=checked.join(', ');
+    const catatan=document.getElementById('isu_cat_'+id)?.value.trim()||'';
+    const files=isuGambar[id]||[];
+    let gambar=[];
+    if(files.length>0){
+      document.getElementById('loadMsg').textContent=`Isu ${i+1}: menghantar gambar...`;
+      document.getElementById('loadSub').textContent=`${files.length} gambar`;
+      gambar=await uploadGambar(files);
+    }
+    senaraIsu.push({kategori,catatan,gambar,isuNo:i+1});
+  }
+
+  const p={
+    noAduan     : no,
+    namaPengadu : document.getElementById('f_nama').value.trim(),
+    jawatan     : document.getElementById('f_jawatan').value,
+    lokasi      : document.getElementById('f_lokasi').value,
+    tarikh      : document.getElementById('f_tarikh').value,
+    kategoriIsu : senaraIsu.map(s=>s.kategori).join(', '),
+    catatan     : senaraIsu.map((s,i)=>`Isu ${i+1} (${s.kategori}): ${s.catatan}`).join('\n'),
+    senaraIsu,
+    gambar      : senaraIsu[0]?.gambar||[],
+    status      : 'Baru', timestamp: Date.now()
+  };
+
+  try{
+    document.getElementById('loadMsg').textContent='Menyimpan ke Firebase...';
+    document.getElementById('loadSub').textContent='';
+    await push(ref(db,'aduan'),p);
+
+    const isuList=senaraIsu.map((s,i)=>`Isu ${i+1}: ${s.kategori}\n${'─'.repeat(28)}\n${s.catatan}\n`).join('\n');
+    document.getElementById('loadMsg').textContent='Menghantar notifikasi emel...';
+    await hantarEmel(
+      `[TechCareTZ] Aduan Baru — ${no} (${senaraIsu.length} Isu)`,
+      EMAIL_TEKNIKAL,
+      {
+        message:`Aduan baharu telah diterima.\n\nNo. Aduan  : ${no}\nNama       : ${p.namaPengadu}\nJawatan    : ${p.jawatan}\nLokasi     : ${p.lokasi}\nTarikh     : ${p.tarikh}\nJumlah Isu : ${senaraIsu.length}\n\n${'═'.repeat(30)}\nBUTIRAN ISU\n${'═'.repeat(30)}\n\n${isuList}\nSila log masuk ke TechCareTZ untuk tindakan lanjut.`,
+        no_aduan:no, nama:p.namaPengadu, lokasi:p.lokasi,
+        kategori:p.kategoriIsu, tarikh:p.tarikh
+      }
+    );
+    document.getElementById('loadBorang').classList.remove('show');
+    document.getElementById('btnHantar').disabled=false;
+    resetBorang();
+    toast(`Aduan ${no} (${senaraIsu.length} isu) berjaya dihantar!`,'success');
+  }catch(err){
+    document.getElementById('loadBorang').classList.remove('show');
+    document.getElementById('btnHantar').disabled=false;
+    toast('Gagal: '+err.message,'error');
+  }
+};
+
+// ── PDF SATU ADUAN + GAMBAR ───────────────────────────────
+window.pdfSatuAduan=async noAduan=>{
+  const a=aduanData.find(x=>x.noAduan===noAduan);
+  if(!a){toast('Data tidak dijumpai','error');return;}
+  toast('Menjana PDF...','info');
+
+  const doc=new window.jspdf.jsPDF();
+  const biru=[26,79,160],kuning=[245,197,24],hitam=[30,30,30];
+
+  // Header
+  doc.setFillColor(...biru);doc.rect(0,0,210,28,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(16);doc.setFont('helvetica','bold');doc.text('TechCareTZ',14,12);
+  doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text('True Zeal Sdn. Bhd. (544838-H)',14,19);
+  doc.text('Laporan Aduan Kerosakan',14,25);
+
+  // Badge no aduan & status
+  doc.setFillColor(...kuning);doc.roundedRect(14,33,65,9,2,2,'F');
+  doc.setTextColor(...hitam);doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text(a.noAduan||'',17,39.5);
+  const stC=a.status==='Selesai'?[5,150,105]:a.status==='Tangguh'?[220,38,38]:[245,197,24];
+  doc.setFillColor(...stC);doc.roundedRect(84,33,45,9,2,2,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(9);doc.text(a.status||'Baru',87,39.5);
+
+  // Jadual maklumat
+  const rows=[
+    ['Nama Pengadu',a.namaPengadu||'-'],
+    ['Emel Pengadu',a.emailPengadu||'-'],
+    ['Jawatan',a.jawatan||'-'],
+    ['Tarikh',a.tarikh||'-'],
+    ['Lokasi',a.lokasi||'-'],
+    ['Kategori Isu',a.kategoriIsu||'-'],
+    ['Catatan',a.catatan||'-']
+  ];
+  if(a.teknisyen)rows.push(['Juruteknik',a.teknisyen]);
+  if(a.statusTindakan)rows.push(['Status Tindakan',a.statusTindakan]);
+  if(a.tarikhKemaskini)rows.push(['Tarikh Selesai',a.tarikhKemaskini]);
+  if(a.catatanTindakan)rows.push(['Catatan Tindakan',a.catatanTindakan]);
+
+  doc.autoTable({
+    startY:47, head:[['Maklumat','Butiran']], body:rows,
+    styles:{fontSize:10,cellPadding:4},
+    headStyles:{fillColor:biru,textColor:[255,255,255],fontStyle:'bold'},
+    alternateRowStyles:{fillColor:[245,247,252]},
+    columnStyles:{0:{cellWidth:55,fontStyle:'bold',textColor:[100,116,139]},1:{cellWidth:130}},
+    margin:{left:14,right:14}
+  });
+
+  // ── GAMBAR KEROSAKAN ─────────────────────────────────
+  const semuaGambar = [...(a.gambar||[]), ...(a.gambarTindakan||[])];
+  if(semuaGambar.length>0){
+    let yPos=doc.lastAutoTable.finalY+10;
+
+    // Header gambar
+    doc.setFillColor(240,246,255);doc.rect(14,yPos,182,8,'F');
+    doc.setTextColor(...biru);doc.setFontSize(9);doc.setFont('helvetica','bold');
+    doc.text('GAMBAR KEROSAKAN & TINDAKAN',17,yPos+5.5);
+    yPos+=14;
+
+    for(let gi=0;gi<semuaGambar.length;gi++){
+      const g=semuaGambar[gi];
+      const imgUrl=g.url||g;
+      const label=gi<(a.gambar||[]).length?`Gambar Kerosakan ${gi+1}`:`Gambar Tindakan ${gi-(a.gambar||[]).length+1}`;
+
+      try{
+        // Cuba guna b64 yang disimpan atau fetch dari URL
+        let imgData=g.b64||null;
+        if(!imgData){ imgData=await urlToB64(imgUrl); }
+        if(imgData){
+          // Semak sama ada perlu page baru
+          if(yPos+70>doc.internal.pageSize.height-20){
+            doc.addPage();
+            doc.setFillColor(...biru);doc.rect(0,0,210,15,'F');
+            doc.setTextColor(255,255,255);doc.setFontSize(9);doc.setFont('helvetica','normal');
+            doc.text('TechCareTZ | '+a.noAduan+' | sambungan',14,10);
+            yPos=22;
+          }
+          // Label gambar
+          doc.setTextColor(...hitam);doc.setFontSize(9);doc.setFont('helvetica','bold');
+          doc.text(label,14,yPos);
+          yPos+=4;
+          // Masukkan gambar — lebar max 80mm, tinggi max 60mm
+          doc.addImage(imgData,'JPEG',14,yPos,80,60,'','MEDIUM');
+          // Gambar kedua dalam baris yang sama
+          if(gi+1<semuaGambar.length){
+            const g2=semuaGambar[gi+1];
+            const label2=gi+1<(a.gambar||[]).length?`Gambar Kerosakan ${gi+2}`:`Gambar Tindakan ${gi+1-(a.gambar||[]).length+1}`;
+            let imgData2=g2.b64||null;
+            if(!imgData2){ imgData2=await urlToB64(g2.url||g2); }
+            if(imgData2){
+              doc.setTextColor(...hitam);doc.setFontSize(9);doc.setFont('helvetica','bold');
+              doc.text(label2,100,yPos-4);
+              doc.addImage(imgData2,'JPEG',100,yPos,80,60,'','MEDIUM');
+              gi++; // skip gambar seterusnya
+            }
+          }
+          yPos+=66;
+        }
+      }catch(e){ console.warn('Gambar gagal dimuat:',e); }
+    }
+  }
+
+  // Footer
+  const ph=doc.internal.pageSize.height;
+  doc.setFillColor(...biru);doc.rect(0,ph-12,210,12,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(8);
+  doc.text('TechCareTZ | True Zeal Sdn. Bhd. | Dijana: '+new Date().toLocaleDateString('ms-MY'),14,ph-4);
+
+  doc.save('Aduan_'+(a.noAduan||'laporan')+'.pdf');
+  toast('PDF dengan gambar berjaya dimuat turun!','success');
+};
+
+// ── PDF SEMUA ADUAN ───────────────────────────────────────
+window.pdfSemuaAduan=()=>{
+  if(!aduanData.length){toast('Tiada data.','info');return;}
+  const doc=new window.jspdf.jsPDF('landscape');
+  const biru=[26,79,160];
+  doc.setFillColor(...biru);doc.rect(0,0,297,22,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(14);doc.setFont('helvetica','bold');
+  doc.text('TechCareTZ — Laporan Semua Aduan',14,10);
+  doc.setFontSize(9);doc.setFont('helvetica','normal');
+  doc.text('True Zeal Sdn. Bhd. (544838-H) | Dijana: '+new Date().toLocaleDateString('ms-MY'),14,17);
+  const rows=aduanData.map(a=>[a.noAduan||'',a.tarikh||'',a.namaPengadu||'',a.emailPengadu||'-',a.lokasi||'',a.kategoriIsu||'',a.status||'Baru',a.teknisyen||'-']);
+  doc.autoTable({startY:27,head:[['No. Aduan','Tarikh','Nama Pengadu','Emel','Lokasi','Kategori Isu','Status','Juruteknik']],body:rows,styles:{fontSize:8,cellPadding:3},headStyles:{fillColor:biru,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[245,247,252]},margin:{left:14,right:14}});
+  const ph=doc.internal.pageSize.height;
+  doc.setFillColor(...biru);doc.rect(0,ph-10,297,10,'F');
+  doc.setTextColor(255,255,255);doc.setFontSize(8);
+  doc.text('Jumlah: '+aduanData.length+' rekod | TechCareTZ | True Zeal Sdn. Bhd.',14,ph-3);
+  doc.save('TechCareTZ_Laporan_'+new Date().toISOString().split('T')[0]+'.pdf');
+  toast('PDF semua aduan dimuat turun!','success');
+};
+
+// ── FILTER STATE ─────────────────────────────────────────
+var filterAktif = 'semua';
+
+window.setFilter = f => {
+  filterAktif = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('f-'+f)?.classList.add('active');
+  renderSenarai();
+};
+
+window.toggleSelesai = () => {
+  const body = document.getElementById('selesaiBody');
+  const arrow = document.getElementById('selesaiArrow');
+  if(body){ body.classList.toggle('show'); arrow?.classList.toggle('open'); }
+};
+
+// ── RENDER SENARAI — Cadangan 5 ──────────────────────────
+const renderSenarai=()=>{
+  const c = document.getElementById('senaraiList');
+  const kiraan = document.getElementById('senaraiKiraan');
+  if(!aduanData.length){ c.innerHTML='<div class="empty">Tiada aduan lagi.</div>'; if(kiraan)kiraan.textContent=''; return; }
+
+  const bmap={Selesai:'b-green',Baru:'b-gray',Tangguh:'b-red','Dalam proses':'b-yellow','Telah hubungi':'b-yellow','Set masa datang':'b-blue'};
+
+  // Susun ikut keutamaan: Baru/Tangguh → Dalam Proses → Selesai
+  const priority = s => s==='Baru'?0:s==='Tangguh'?1:s==='Selesai'?99:2;
+  const sorted = [...aduanData].sort((a,b) => priority(a.status) - priority(b.status));
+
+  // Tapis mengikut filter aktif
+  const statusMap = {
+    semua   : null,
+    baru    : ['Baru'],
+    proses  : ['Telah hubungi','Set masa datang','Dalam proses'],
+    tangguh : ['Tangguh'],
+    selesai : ['Selesai']
+  };
+  const filterList = statusMap[window._filterAktif||'semua'];
+  const ditapis = filterList ? sorted.filter(a => filterList.includes(a.status||'Baru')) : sorted;
+
+  // Kira setiap status untuk kiraan
+  const jBaru    = aduanData.filter(a => (a.status||'Baru')==='Baru').length;
+  const jProses  = aduanData.filter(a => ['Telah hubungi','Set masa datang','Dalam proses'].includes(a.status)).length;
+  const jTangguh = aduanData.filter(a => a.status==='Tangguh').length;
+  const jSelesai = aduanData.filter(a => a.status==='Selesai').length;
+
+  if(kiraan) kiraan.innerHTML =
+    `<span style="color:#ef4444;font-weight:700;">${jBaru} Baru</span> &nbsp;·&nbsp; ` +
+    `<span style="color:#d97706;font-weight:700;">${jProses} Proses</span> &nbsp;·&nbsp; ` +
+    `<span style="color:#dc2626;font-weight:700;">${jTangguh} Tangguh</span> &nbsp;·&nbsp; ` +
+    `<span style="color:#059669;font-weight:700;">${jSelesai} Selesai</span>`;
+
+  if(!ditapis.length){
+    c.innerHTML='<div class="empty">Tiada aduan dalam kategori ini.</div>'; return;
+  }
+
+  // Pisahkan aktif dan selesai
+  const aktifList  = ditapis.filter(a => a.status !== 'Selesai');
+  const selesaiList = ditapis.filter(a => a.status === 'Selesai');
+
+  const buatKad = a => {
+    let imgs = '';
+    if(a.gambar?.length){ imgs='<div class="img-row">'+a.gambar.map(g=>`<img class="img-thumb" src="${g.thumb||g.url}" onclick="bukaLightbox('${g.url}')" alt="g">`).join('')+'</div>'; }
+    const border = a.status==='Tangguh'?'border-left:3px solid #ef4444;':a.status==='Baru'?'border-left:3px solid #94a3b8;':a.status==='Selesai'?'border-left:3px solid #10b981;opacity:.85;':'border-left:3px solid #f5c518;';
+    return `<div class="aduan-card" style="${border}">
+      <div class="aduan-head">
+        <span class="aduan-no">${a.noAduan||''}</span>
+        <span class="badge ${bmap[a.status||'Baru']||'b-gray'}">${a.status||'Baru'}</span>
+      </div>
+      <div class="aduan-kat">${a.senaraIsu?`${a.senaraIsu.length} Isu: `:''}${a.kategoriIsu||''}</div>
+      <div class="aduan-meta">
+        <span>📍 ${(a.lokasi||'').replace("Pusat Hemodialisis Darul Ta'zim ","PHDT ")}</span>
+        <span>👤 ${a.namaPengadu||''}</span>
+        <span>📅 ${a.tarikh||''}</span>
+      </div>
+      ${a.catatan?`<div style="font-size:12px;color:#64748b;margin-top:3px;">${(a.catatan||'').substring(0,65)}${(a.catatan||'').length>65?'...':''}</div>`:''}
+      ${a.teknisyen?`<div style="font-size:11px;color:#1a4fa0;margin-top:3px;font-weight:600;">🔧 ${a.teknisyen}</div>`:''}
+      ${imgs}
+      <div style="margin-top:8px;">
+        <button class="btn-sm btn-sm-green" style="font-size:11px;padding:6px 12px;" onclick="pdfSatuAduan('${a.noAduan}')">⬇ PDF + Gambar</button>
+      </div>
+    </div>`;
+  };
+
+  let html = aktifList.map(buatKad).join('');
+
+  // Selesai — dilipat dalam accordion
+  if(selesaiList.length > 0 && (window._filterAktif||'semua') !== 'selesai'){
+    html += `
+      <button class="selesai-toggle" onclick="toggleSelesai()">
+        <div class="selesai-toggle-label">
+          <span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;"></span>
+          Selesai (${selesaiList.length} aduan)
+        </div>
+        <span class="selesai-toggle-arrow" id="selesaiArrow">▼</span>
+      </button>
+      <div class="selesai-collapsed" id="selesaiBody">
+        ${selesaiList.map(buatKad).join('')}
+      </div>`;
+  } else if((window._filterAktif||'semua') === 'selesai'){
+    html += selesaiList.map(buatKad).join('');
+  }
+
+  c.innerHTML = html;
+};
+
+// ── RENDER TINDAKAN — Workflow Baharu ────────────────────
+const renderTindakan=()=>{
+  const aktif  = aduanData.filter(a=>a.status!=='Selesai');
+  const selesai= aduanData.filter(a=>a.status==='Selesai');
+  document.getElementById('tindakanCount').textContent=aktif.length+' aduan';
+  const c=document.getElementById('tindakanList');
+  if(!aduanData.length){c.innerHTML='<div class="tk-empty">Tiada aduan dalam sistem.</div>';return;}
+
+  const dotColor={Baru:'#94a3b8','Dalam Proses':'#3b82f6',Tangguh:'#ef4444'};
+  const opts='<option value="">-- Pilih juruteknik --</option>'+JURUTEKNIK.map(j=>`<option value="${j}">${j}</option>`).join('');
+
+  const buatAktifKad=(a,i)=>{
+    const key=a._key||'';
+    const dot=dotColor[a.status]||'#94a3b8';
+    const stSemasa=a.status||'Baru';
+    let imgs='';
+    if(a.gambar?.length){imgs='<div class="tk-gambar-row">'+a.gambar.slice(0,3).map(g=>`<img class="tk-img" src="${g.thumb||g.url}" onclick="bukaLightbox('${g.url}')" alt="g">`).join('')+'</div>';}
+    const tkOpts=JURUTEKNIK.map(j=>`<option value="${j}" ${a.teknisyen===j?'selected':''}>${j}</option>`).join('');
+    const isProgress=stSemasa==='Dalam Proses';
+    const isTangguh=stSemasa==='Tangguh';
+
+    return `<div class="tk-card" id="tkcard_${i}">
+      <div class="tk-header" onclick="toggleTkCard(${i})">
+        <div class="tk-status-dot" style="background:${dot};"></div>
+        <div class="tk-header-info">
+          <div class="tk-no">${a.noAduan||''} &nbsp;·&nbsp; <span style="color:${dot};font-weight:700;">${stSemasa}</span>${a.teknisyen?' &nbsp;·&nbsp; 🔧 '+a.teknisyen:''}</div>
+          <div class="tk-kat">${a.kategoriIsu||''}</div>
+          <div class="tk-meta">
+            <span>📍 ${(a.lokasi||'').replace("Pusat Hemodialisis Darul Ta'zim ","PHDT ")}</span>
+            <span>👤 ${a.namaPengadu||''}</span>
+            <span>📅 ${a.tarikh||''}</span>
+          </div>
+          ${a.catatan?`<div style="font-size:11px;color:#64748b;margin-top:2px;">"${(a.catatan||'').substring(0,55)}${(a.catatan||'').length>55?'...':''}"</div>`:''}
+        </div>
+        <span style="font-size:14px;color:#94a3b8;" id="tkarrow_${i}">▼</span>
+      </div>
+
+      <div class="tk-body" id="tkbody_${i}" style="display:none;">
+        ${imgs}
+
+        <!-- 1. Pilih Juruteknik -->
+        <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">1 · Juruteknik</div>
+        <select class="tk-juruteknik" id="tk_${i}">
+          <option value="">-- Pilih juruteknik --</option>${tkOpts}
+        </select>
+
+        <!-- 2. Set Tarikh & Masa Kedatangan -->
+        <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">2 · Tarikh & Masa Kedatangan</div>
+        <div class="tk-masa-row" style="margin-bottom:10px;">
+          <input type="date" class="tk-masa-input" id="tkTarikh_${i}" value="${a.tarikhKedatangan||new Date().toISOString().split('T')[0]}">
+          <input type="time" class="tk-masa-input" id="tkMasa_${i}" value="${a.masaKedatangan||'09:00'}">
+        </div>
+
+        <!-- 3. Status Tindakan -->
+        <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">3 · Status Semasa</div>
+        <div class="tk-status-btns" style="grid-template-columns:1fr 1fr;margin-bottom:10px;">
+          <button class="tk-status-btn tk-btn-dalamproses ${isProgress?'aktif':''}" onclick="pilihStatus(${i},'Dalam Proses')">
+            🔧 Dalam Proses<div style="font-size:9px;font-weight:400;margin-top:2px;">Sedang baiki sekarang</div>
+          </button>
+          <button class="tk-status-btn tk-btn-tangguh ${isTangguh?'aktif':''}" onclick="pilihStatus(${i},'Tangguh')">
+            ⏸ Tangguh<div style="font-size:9px;font-weight:400;margin-top:2px;">Perlukan masa lain</div>
+          </button>
+        </div>
+
+        <!-- 4. Catatan -->
+        <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">4 · Catatan (pilihan)</div>
+        <textarea class="tk-catatan" id="ct_${i}" placeholder="Catatan tindakan...">${a.catatanTindakan||''}</textarea>
+
+        <button class="tk-simpan" style="margin-bottom:12px;" onclick="simpanTindakan('${key}',${i})">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+          Simpan & Jana PDF Tindakan
+        </button>
+
+        <!-- 5. Selesai — bahagian berasingan -->
+        <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:12px;">
+          <div style="font-size:11px;font-weight:700;color:#15803d;margin-bottom:4px;">✅ Tandakan Selesai Sepenuhnya</div>
+          <div style="font-size:11px;color:#64748b;margin-bottom:10px;">Hanya tandakan selesai apabila kerja baikan telah siap sepenuhnya.</div>
+          <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;">Gambar Bukti Kerja Selesai</div>
+          <div class="upload-box" style="padding:10px;margin-bottom:8px;" onclick="document.getElementById('tImg_${i}').click()">
+            <input type="file" id="tImg_${i}" accept="image/*" multiple style="display:none;" onchange="previewImgTindakan(this,${i})">
+            📷 Pilih gambar bukti (pilihan)
+          </div>
+          <div id="tImgPreview_${i}" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+          <textarea class="tk-catatan" id="ctSelesai_${i}" placeholder="Catatan kerja selesai..." style="min-height:55px;margin-bottom:8px;">${a.catatanSelesai||''}</textarea>
+          <button onclick="tandakanSelesai('${key}',${i})"
+            style="width:100%;padding:12px;border-radius:10px;background:#059669;color:#fff;font-size:14px;font-weight:700;font-family:inherit;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+            ✅ Selesai & Jana PDF Laporan
+          </button>
+        </div>
+      </div>
+    </div>`;
+  };
+
+  let html=aktif.map(buatAktifKad).join('');
+
+  if(selesai.length){
+    html+=`<button class="selesai-toggle" onclick="toggleSelesai()">
+      <div class="selesai-toggle-label">
+        <span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;"></span>
+        Selesai (${selesai.length} aduan)
+      </div>
+      <span class="selesai-toggle-arrow" id="selesaiArrow">▼</span>
+    </button>
+    <div class="selesai-collapsed" id="selesaiBody">
+      ${selesai.map(a=>`<div class="tk-selesai-card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:#059669;">${a.noAduan||''}</div>
+            <div style="font-size:13px;font-weight:700;">${a.kategoriIsu||''}</div>
+            <div style="font-size:11px;color:#64748b;">${a.namaPengadu||''} · ${(a.lokasi||'').split('(')[0].trim()}</div>
+            ${a.teknisyen?`<div style="font-size:11px;color:#1a4fa0;font-weight:600;">🔧 ${a.teknisyen}</div>`:''}
+            ${a.tarikhKemaskini?`<div style="font-size:10px;color:#94a3b8;">Selesai: ${a.tarikhKemaskini}</div>`:''}
+          </div>
+          <span class="badge b-green">Selesai</span>
+        </div>
+        <div style="margin-top:8px;">
+          <button class="btn-sm btn-sm-green" style="font-size:11px;padding:6px 12px;" onclick="pdfSatuAduan('${a.noAduan}')">⬇ PDF</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  c.innerHTML=html;
+  if(aktif.length>0) toggleTkCard(0);
+};
+
+window.toggleTkCard=i=>{
+  const body=document.getElementById('tkbody_'+i); const arrow=document.getElementById('tkarrow_'+i);
+  if(!body)return;
+  const terbuka=body.style.display!=='none';
+  document.querySelectorAll('[id^="tkbody_"]').forEach(el=>{el.style.display='none';});
+  document.querySelectorAll('[id^="tkarrow_"]').forEach(el=>{el.textContent='▼';});
+  if(!terbuka){body.style.display='block';if(arrow)arrow.textContent='▲';}
+};
+
+window.pilihStatus=(i,status)=>{
+  ['dalamproses','tangguh'].forEach(s=>document.querySelector(`#tkbody_${i} .tk-btn-${s}`)?.classList.remove('aktif'));
+  const map={'Dalam Proses':'dalamproses','Tangguh':'tangguh'};
+  document.querySelector(`#tkbody_${i} .tk-btn-${map[status]}`)?.classList.add('aktif');
+};
+
+// Simpan Tindakan + Jana PDF
+window.simpanTindakan=async(key,i)=>{
+  const map={'dalamproses':'Dalam Proses','tangguh':'Tangguh'};
+  let st='';
+  for(const [cls,val] of Object.entries(map)){ if(document.querySelector(`#tkbody_${i} .tk-btn-${cls}`)?.classList.contains('aktif')){st=val;break;} }
+  if(!st){toast('Sila pilih status — Dalam Proses atau Tangguh','error');return;}
+
+  const teknisyen=document.getElementById('tk_'+i)?.value||'';
+  const catatan=document.getElementById('ct_'+i)?.value||'';
+  const td=document.getElementById('tkTarikh_'+i)?.value||'';
+  const tm=document.getElementById('tkMasa_'+i)?.value||'';
+  const masaDatang=td&&tm?`${td} jam ${tm}`:td||tm;
+  const tarikhKemaskini=new Date().toLocaleDateString('ms-MY');
+
+  try{
+    await update(ref(db,'aduan/'+key),{teknisyen,status:st,statusTindakan:st,catatanTindakan:catatan,tarikhKedatangan:td,masaKedatangan:tm,masaDatang,tarikhKemaskini});
+    toast('Tindakan disimpan. Menjana PDF...','info');
+
+    // Jana PDF Tindakan terus
+    const aduanItem=aduanData.find(a=>a._key===key)||{};
+    const doc=new window.jspdf.jsPDF();
+    const biru=[26,79,160],kuning=[245,197,24],hitam=[30,30,30];
+    doc.setFillColor(...biru);doc.rect(0,0,210,28,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(16);doc.setFont('helvetica','bold');doc.text('TechCareTZ',14,12);
+    doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text('True Zeal Sdn. Bhd. (544838-H)',14,19);doc.text('Laporan Tindakan',14,25);
+    const stC=st==='Tangguh'?[220,38,38]:[59,130,246];
+    doc.setFillColor(...kuning);doc.roundedRect(14,33,75,9,2,2,'F');
+    doc.setTextColor(...hitam);doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text(aduanItem.noAduan||'',17,39.5);
+    doc.setFillColor(...stC);doc.roundedRect(94,33,40,9,2,2,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(9);doc.text(st,97,39.5);
+    const rows=[
+      ['Nama Pengadu', aduanItem.namaPengadu||'-'],
+      ['Jawatan',      aduanItem.jawatan||'-'],
+      ['Lokasi',       aduanItem.lokasi||'-'],
+      ['Kategori Isu', aduanItem.kategoriIsu||'-'],
+      ['Tarikh Aduan', aduanItem.tarikh||'-'],
+      ['Penerangan',   aduanItem.catatan||'-'],
+      ['',''],
+      ['Juruteknik',   teknisyen||'-'],
+      ['Status',       st],
+      ['Tarikh & Masa Kedatangan', masaDatang||'-'],
+      ['Catatan Tindakan', catatan||'-'],
+      ['Tarikh Rekod',     tarikhKemaskini],
+    ];
+    doc.autoTable({startY:47,head:[['Maklumat','Butiran']],body:rows,styles:{fontSize:10,cellPadding:4},headStyles:{fillColor:biru,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[245,247,252]},columnStyles:{0:{cellWidth:60,fontStyle:'bold',textColor:[100,116,139]},1:{cellWidth:125}},margin:{left:14,right:14}});
+    const ph=doc.internal.pageSize.height;
+    doc.setFillColor(...biru);doc.rect(0,ph-12,210,12,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(8);
+    doc.text('TechCareTZ | True Zeal Sdn. Bhd. | Dijana: '+tarikhKemaskini,14,ph-4);
+    doc.save('Tindakan_'+(aduanItem.noAduan||key)+'.pdf');
+    toast('PDF Tindakan berjaya dijana! Sila share kepada pengadu.','success');
+  }catch(err){toast('Gagal: '+err.message,'error');}
+};
+
+// Tandakan Selesai + Jana PDF Laporan Selesai (dengan gambar)
+window.tandakanSelesai=async(key,i)=>{
+  const teknisyen=document.getElementById('tk_'+i)?.value||'';
+  const catatan=document.getElementById('ctSelesai_'+i)?.value||'';
+  const tarikhKemaskini=new Date().toLocaleDateString('ms-MY');
+  const fi=document.getElementById('tImg_'+i);
+
+  let gambarTindakan=[];
+  if(fi?.files.length>0){
+    toast('Menghantar gambar bukti...','info');
+    gambarTindakan=await uploadGambarTindakan(Array.from(fi.files).slice(0,3));
+  }
+
+  try{
+    await update(ref(db,'aduan/'+key),{status:'Selesai',statusTindakan:'Selesai',teknisyen,catatanSelesai:catatan,tarikhKemaskini,gambarTindakan});
+    toast('Selesai! Menjana PDF laporan...','info');
+
+    // Jana PDF Laporan Selesai (dengan gambar)
+    const aduanItem=aduanData.find(a=>a._key===key)||{};
+    const semua={...aduanItem,status:'Selesai',teknisyen,catatanSelesai:catatan,tarikhKemaskini,gambarTindakan};
+
+    const doc=new window.jspdf.jsPDF();
+    const biru=[26,79,160],kuning=[245,197,24],hitam=[30,30,30];
+    doc.setFillColor(...biru);doc.rect(0,0,210,28,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(16);doc.setFont('helvetica','bold');doc.text('TechCareTZ',14,12);
+    doc.setFontSize(9);doc.setFont('helvetica','normal');doc.text('True Zeal Sdn. Bhd. (544838-H)',14,19);doc.text('Laporan Aduan Selesai',14,25);
+    doc.setFillColor(...kuning);doc.roundedRect(14,33,75,9,2,2,'F');
+    doc.setTextColor(...hitam);doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text(aduanItem.noAduan||'',17,39.5);
+    doc.setFillColor(5,150,105);doc.roundedRect(94,33,38,9,2,2,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(9);doc.text('Selesai ✓',97,39.5);
+    const rows=[
+      ['Nama Pengadu',   aduanItem.namaPengadu||'-'],
+      ['Jawatan',        aduanItem.jawatan||'-'],
+      ['Lokasi',         aduanItem.lokasi||'-'],
+      ['Kategori Isu',   aduanItem.kategoriIsu||'-'],
+      ['Tarikh Aduan',   aduanItem.tarikh||'-'],
+      ['Penerangan',     aduanItem.catatan||'-'],
+      ['',''],
+      ['Juruteknik',     teknisyen||'-'],
+      ['Tarikh Selesai', tarikhKemaskini],
+      ['Catatan Selesai',catatan||'-'],
+    ];
+    doc.autoTable({startY:47,head:[['Maklumat','Butiran']],body:rows,styles:{fontSize:10,cellPadding:4},headStyles:{fillColor:biru,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[245,247,252]},columnStyles:{0:{cellWidth:60,fontStyle:'bold',textColor:[100,116,139]},1:{cellWidth:125}},margin:{left:14,right:14}});
+
+    // Gambar bukti kerja selesai
+    const semuaGambar=[...(aduanItem.gambar||[]),...gambarTindakan];
+    if(semuaGambar.length>0){
+      let yPos=doc.lastAutoTable.finalY+10;
+      doc.setFillColor(240,253,244);doc.rect(14,yPos,182,8,'F');
+      doc.setTextColor(5,150,105);doc.setFontSize(9);doc.setFont('helvetica','bold');
+      doc.text('GAMBAR BUKTI KERJA',17,yPos+5.5);yPos+=14;
+      for(let gi=0;gi<semuaGambar.length;gi++){
+        const g=semuaGambar[gi];
+        const imgUrl=g.url||g;
+        const label=gi<(aduanItem.gambar||[]).length?`Gambar Aduan ${gi+1}`:`Gambar Kerja Selesai ${gi-(aduanItem.gambar||[]).length+1}`;
+        try{
+          let imgData=g.b64||await urlToB64(imgUrl);
+          if(imgData){
+            if(yPos+70>doc.internal.pageSize.height-20){doc.addPage();yPos=14;}
+            doc.setTextColor(...hitam);doc.setFontSize(9);doc.setFont('helvetica','bold');doc.text(label,14,yPos);yPos+=4;
+            doc.addImage(imgData,'JPEG',14,yPos,80,60,'','MEDIUM');
+            if(gi+1<semuaGambar.length){
+              const g2=semuaGambar[gi+1];
+              const label2=gi+1<(aduanItem.gambar||[]).length?`Gambar Aduan ${gi+2}`:`Gambar Kerja Selesai ${gi+1-(aduanItem.gambar||[]).length+1}`;
+              let imgData2=g2.b64||await urlToB64(g2.url||g2);
+              if(imgData2){doc.text(label2,100,yPos-4);doc.addImage(imgData2,'JPEG',100,yPos,80,60,'','MEDIUM');gi++;}
+            }
+            yPos+=66;
+          }
+        }catch(e){}
+      }
+    }
+    const ph=doc.internal.pageSize.height;
+    doc.setFillColor(...biru);doc.rect(0,ph-12,210,12,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(8);
+    doc.text('TechCareTZ | True Zeal Sdn. Bhd. | Dijana: '+tarikhKemaskini,14,ph-4);
+    doc.save('Selesai_'+(aduanItem.noAduan||key)+'.pdf');
+    toast('✅ PDF Laporan Selesai berjaya dijana! Sila share kepada pengadu.','success');
+  }catch(err){toast('Gagal: '+err.message,'error');}
+};
+
+window.previewImgTindakan=(input,i)=>{
+  const prev=document.getElementById('tImgPreview_'+i);
+  if(!prev)return;
+  prev.innerHTML='';
+  Array.from(input.files).slice(0,3).forEach(file=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      const img=document.createElement('img');
+      img.src=e.target.result;
+      img.style.cssText='width:60px;height:60px;border-radius:8px;object-fit:cover;border:.5px solid rgba(0,0,0,.1);';
+      prev.appendChild(img);
+    };
+    r.readAsDataURL(file);
+  });
+};
+
+const uploadGambarTindakan=async files=>{
+  const urls=[];
+  for(const file of files){
+    const b64=await f2b64(file); const form=new FormData();
+    form.append('image',b64.split(',')[1]); form.append('key',IMGBB_KEY);
+    try{ const res=await fetch('https://api.imgbb.com/1/upload',{method:'POST',body:form}); const json=await res.json(); if(json.success)urls.push({url:json.data.url,thumb:json.data.thumb.url}); }catch(e){}
+  }
+  return urls;
+};
+
+// ── DASHBOARD ─────────────────────────────────────────────
+const renderDashboard=()=>{
+  let r={jumlah:0,selesai:0,proses:0,tangguh:0,baru:0},kat={};
+  aduanData.forEach(a=>{ r.jumlah++; if(a.status==='Selesai')r.selesai++; else if(a.status==='Tangguh')r.tangguh++; else if(a.status==='Baru'||!a.status)r.baru++; else r.proses++; const k=a.kategoriIsu||'Lain-lain'; kat[k]=(kat[k]||0)+1; });
+  document.getElementById('mJ').textContent=r.jumlah;
+  document.getElementById('mS').textContent=r.selesai;
+  document.getElementById('mP').textContent=r.proses;
+  document.getElementById('mT').textContent=r.tangguh+r.baru;
+  document.getElementById('mPc').textContent=(r.jumlah?Math.round(r.selesai/r.jumlah*100):0)+'% kadar';
+  const labels=Object.keys(kat),vals=labels.map(k=>kat[k]);
+  const cols=['#f5c518','#1a4fa0','#f5c518','#1a4fa0','#f5c518','#1a4fa0','#f5c518'];
+  if(c1)c1.destroy();
+  c1=new Chart(document.getElementById('chart1'),{type:'bar',data:{labels:labels.length?labels:['Tiada data'],datasets:[{data:vals.length?vals:[0],backgroundColor:cols,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}}},x:{ticks:{font:{size:9},maxRotation:35}}}}});
+  if(c2)c2.destroy();
+  c2=new Chart(document.getElementById('chart2'),{type:'doughnut',data:{labels:['Selesai','Proses','Tangguh','Baru'],datasets:[{data:[r.selesai,r.proses,r.tangguh,r.baru],backgroundColor:['#059669','#f5c518','#ef4444','#94a3b8'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'right',labels:{font:{size:11},padding:10,boxWidth:10}}}}});
+};
+
+window.bukaLightbox=url=>{document.getElementById('lbImg').src=url;document.getElementById('lightbox').classList.add('show');};
+window.tutupLightbox=()=>document.getElementById('lightbox').classList.remove('show');
+
+const resetBorang=()=>{
+  ['f_nama'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f_jawatan','f_lokasi'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('f_tarikh').value=new Date().toISOString().split('T')[0];
+  isuGambar={};
+  isuCount=0;
+  const container=document.getElementById('isuContainer');
+  if(container){container.innerHTML='';tambahIsu();}
+};
+
+// eksportCSV handled via window._eksportCSV above
+
+function setConn(s,l){document.getElementById('connDot').className='conn-dot '+s;document.getElementById('connText').textContent=l;}
+function toast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast t-'+(type||'info')+' show';setTimeout(()=>t.classList.remove('show'),4500);}
+window.toast=toast;
+
+// Daftarkan semua fungsi modul supaya boleh dipanggil dari script biasa
+window._renderDashboard  = ()=>renderDashboard();
+window._renderTindakan   = ()=>renderTindakan();
+window._renderSenarai    = ()=>renderSenarai();
+window._simpanTindakan   = (key,i)=>simpanTindakan(key,i);
+window._tandakanSelesai  = (key,i)=>tandakanSelesai(key,i);
+window._pdfSatuAduan     = noAduan=>pdfSatuAduan(noAduan);
+window._pdfSemuaAduan    = ()=>pdfSemuaAduan();
+window._eksportCSV       = ()=>eksportCSV2();
+window._tambahIsu        = ()=>tambahIsu();
+window._buangIsu         = id=>buangIsu(id);
+window._piliGambarIsu    = (input,id)=>piliGambarIsu(input,id);
+window._buangGambarIsu   = (id,idx)=>buangGambarIsu(id,idx);
+
+const eksportCSV2=()=>{
+  if(!aduanData.length){toast('Tiada data.','info');return;}
+  const h=['No Aduan','Nama','Emel Pengadu','Jawatan','Lokasi','Kategori','Tarikh','Status','Juruteknik'];
+  const rows=aduanData.map(a=>[a.noAduan,a.namaPengadu,a.emailPengadu||'',a.jawatan,a.lokasi,a.kategoriIsu,a.tarikh,a.status,a.teknisyen||''].map(v=>'"'+(v||'')+'"').join(','));
+  const csv=[h.join(','),...rows].join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='TechCareTZ_'+new Date().toISOString().split('T')[0]+'.csv';a.click();URL.revokeObjectURL(url);
+};
+</script>
+</body>
+</html>
