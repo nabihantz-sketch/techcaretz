@@ -134,11 +134,17 @@ input[type=file]{display:none;}
 .tk-pengadu-info.tiada{background:#f8fafc;color:#94a3b8;}
 .tk-juruteknik{width:100%;padding:10px 13px;border:.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a4fa0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:38px;margin-bottom:10px;}
 .tk-juruteknik:focus{outline:none;border-color:#1a4fa0;box-shadow:0 0 0 3px rgba(26,79,160,.1);}
-.jk-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.jk-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
 .jk-cb{display:none;}
-.jk-lbl{padding:7px 12px;border-radius:20px;border:1.5px solid rgba(0,0,0,0.12);background:#fff;font-size:12px;font-weight:600;color:#64748b;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.jk-lbl{display:flex;align-items:center;gap:8px;padding:10px 11px;border-radius:10px;border:1.5px solid rgba(0,0,0,0.1);background:#fff;font-size:12px;font-weight:600;color:#64748b;cursor:pointer;transition:all .15s;line-height:1.3;min-height:44px;}
 .jk-lbl:active{transform:scale(.97);}
-.jk-cb:checked + .jk-lbl{background:#1a4fa0;color:#fff;border-color:#1a4fa0;}
+.jk-icon{width:28px;height:28px;border-radius:8px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;transition:all .15s;}
+.jk-name{flex:1;font-size:11px;font-weight:700;color:#64748b;line-height:1.3;}
+.jk-check{width:16px;height:16px;border-radius:50%;border:1.5px solid #cbd5e1;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.jk-cb:checked + .jk-lbl{background:#eff6ff;border-color:#1a4fa0;}
+.jk-cb:checked + .jk-lbl .jk-icon{background:#1a4fa0;}
+.jk-cb:checked + .jk-lbl .jk-name{color:#1a4fa0;}
+.jk-cb:checked + .jk-lbl .jk-check{background:#1a4fa0;border-color:#1a4fa0;}
 .tk-status-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px;}
 .tk-status-btn{padding:10px 8px;border-radius:10px;font-size:12px;font-weight:700;font-family:inherit;border:1.5px solid transparent;cursor:pointer;text-align:center;transition:all .15s;line-height:1.3;}
 .tk-status-btn:active{transform:scale(0.97);}
@@ -1223,11 +1229,22 @@ const renderTindakan=()=>{
   if(!aduanData.length){c.innerHTML='<div class="tk-empty">Tiada aduan dalam sistem.</div>';return;}
 
   const dotColor={Baru:'#94a3b8','Dalam Proses':'#3b82f6',Tangguh:'#ef4444'};
+  const JK_ICONS = ['🏢','💧','⚡','🌐','🔌','🔧','❄️','🔩','🤖'];
   const buatJkGrid=(id,semasa)=>{
     const semasakList=(semasa||'').split(', ').filter(Boolean);
     return JURUTEKNIK.map((j,idx)=>{
       const checked=semasakList.includes(j)?'checked':'';
-      return `<div><input class="jk-cb" type="checkbox" id="jk_${id}_${idx}" name="jk_${id}" value="${j}" ${checked}><label class="jk-lbl" for="jk_${id}_${idx}">${j}</label></div>`;
+      const icon=JK_ICONS[idx]||'🔧';
+      return `<div>
+        <input class="jk-cb" type="checkbox" id="jk_${id}_${idx}" name="jk_${id}" value="${j}" ${checked}>
+        <label class="jk-lbl" for="jk_${id}_${idx}">
+          <div class="jk-icon">${icon}</div>
+          <div class="jk-name">${j}</div>
+          <div class="jk-check">
+            <svg width="9" height="9" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </label>
+      </div>`;
     }).join('');
   };
 
