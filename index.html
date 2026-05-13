@@ -664,27 +664,40 @@ const renderKategoriGrid = () => {
 
 // ── GAMBAR ────────────────────────────────────────────────
 window.piliGambar = input => {
-  const files = Array.from(input.files).slice(0,3);
-  gambarFiles = files;
+  const baru = Array.from(input.files);
+  // Tambah ke senarai sedia ada, had 3
+  const ruang = 3 - gambarFiles.length;
+  if(ruang <= 0){ toast('Had 3 gambar telah dicapai','warn'); return; }
+  const ditambah = baru.slice(0, ruang);
+  gambarFiles = [...gambarFiles, ...ditambah];
+  input.value = ''; // Reset input supaya boleh pilih lagi
+  renderGambarPreview();
+  if(baru.length > ruang) toast(`Hanya ${ruang} gambar ditambah (had 3)`, 'warn');
+};
+
+const renderGambarPreview = () => {
   const grid = document.getElementById('imgGrid');
   const txt  = document.getElementById('uploadTxt');
+  if(!grid) return;
   grid.innerHTML = '';
-  if(txt) txt.textContent = files.length+' gambar dipilih';
-  files.forEach((file,i) => {
-    const r=new FileReader(); r.onload=e=>{
-      const item=document.createElement('div'); item.className='img-item';
-      item.innerHTML=`<img src="${e.target.result}" alt="p"><button class="rm-btn" onclick="buangGambar(${i})">×</button>`;
+  if(txt) txt.textContent = gambarFiles.length > 0
+    ? `${gambarFiles.length}/3 gambar dipilih — ketik untuk tambah lagi`
+    : 'Ketik untuk pilih gambar';
+  gambarFiles.forEach((file, i) => {
+    const r = new FileReader();
+    r.onload = e => {
+      const item = document.createElement('div');
+      item.className = 'img-item';
+      item.innerHTML = `<img src="${e.target.result}" alt="p"><button class="rm-btn" onclick="buangGambar(${i})">×</button>`;
       grid.appendChild(item);
-    }; r.readAsDataURL(file);
+    };
+    r.readAsDataURL(file);
   });
 };
 
 window.buangGambar = i => {
-  gambarFiles.splice(i,1);
-  document.getElementById('fileUp').value='';
-  document.getElementById('imgGrid').innerHTML='';
-  document.getElementById('uploadTxt').textContent = gambarFiles.length>0?gambarFiles.length+' gambar dipilih':'Ketik untuk pilih gambar';
-  gambarFiles.forEach((file,j)=>{ const r=new FileReader(); r.onload=e=>{ const item=document.createElement('div'); item.className='img-item'; item.innerHTML=`<img src="${e.target.result}" alt="p"><button class="rm-btn" onclick="buangGambar(${j})">×</button>`; document.getElementById('imgGrid').appendChild(item); }; r.readAsDataURL(file); });
+  gambarFiles.splice(i, 1);
+  renderGambarPreview();
 };
 
 // ── VALIDASI ─────────────────────────────────────────────
@@ -1382,10 +1395,8 @@ const resetBorang=()=>{
   document.getElementById('f_tarikh').value=new Date().toISOString().split('T')[0];
   document.getElementById('f_masa').value=new Date().toTimeString().slice(0,5);
   document.querySelectorAll('input[name="kat_borang"]').forEach(cb=>cb.checked=false);
-  document.getElementById('imgGrid').innerHTML='';
-  document.getElementById('uploadTxt').textContent='Ketik untuk pilih gambar';
-  document.getElementById('fileUp').value='';
   gambarFiles=[];
+  renderGambarPreview();
 };
 
 // ── TERIMA ADUAN → status: Ditugaskan ────────────────────
