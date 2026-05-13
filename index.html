@@ -450,16 +450,6 @@ input[type=file]{display:none;}
         <button class="btn-sm btn-sm-green" onclick="pdfSemuaAduan()">⬇ PDF</button>
       </div>
     </div>
-    <!-- Filter tabs -->
-    <div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;">
-      <button class="filter-btn active" id="f-semua" onclick="setFilter('semua')">Semua</button>
-      <button class="filter-btn" id="f-baru" onclick="setFilter('baru')">🔴 Baru</button>
-      <button class="filter-btn" id="f-proses" onclick="setFilter('proses')">🟣 Ditugaskan</button>
-      <button class="filter-btn" id="f-tangguh" onclick="setFilter('tangguh')">⚠ Tangguh</button>
-      <button class="filter-btn" id="f-selesai" onclick="setFilter('selesai')">✅ Selesai</button>
-      <button class="filter-btn" id="f-ditolak" onclick="setFilter('ditolak')">🚫 Ditolak</button>
-    </div>
-    <!-- Kiraan ringkas -->
     <div id="senaraiKiraan" style="font-size:11px;color:#64748b;margin-bottom:10px;"></div>
     <div id="senaraiList"><div class="empty">Memuatkan data...</div></div>
   </div>
@@ -1109,7 +1099,7 @@ window.pdfSemuaAduan=()=>{
 
 // ── KEUTAMAAN & GENDER HELPER ─────────────────────────────
 const keutamaanBadge=k=>{ const m={Kritikal:'b-kritikal',Tinggi:'b-tinggi',Sederhana:'b-sederhana',Rendah:'b-rendah'}; return `<span class="badge ${m[k]||'b-gray'}">${k||'Tiada'}</span>`; };
-const statusBadge=s=>{ const m={Baru:'b-gray',Ditugaskan:'b-ditugaskan',Ditolak:'b-ditolak','Dalam Proses':'b-yellow',Tangguh:'b-red',Selesai:'b-green'}; return `<span class="badge ${m[s]||'b-gray'}">${s||'Baru'}</span>`; };
+const statusBadge=s=>{ const m={Baru:'b-gray',Diterima:'b-ditugaskan',Ditolak:'b-ditolak','Dalam Proses':'b-yellow',Tangguh:'b-red',Selesai:'b-green'}; return `<span class="badge ${m[s]||'b-gray'}">${s||'Baru'}</span>`; };
 
 const genderIcon=nama=>{
   const n=(nama||'').toLowerCase();
@@ -1148,20 +1138,20 @@ const renderSenarai=()=>{
   const kiraan = document.getElementById('senaraiKiraan');
   if(!aduanData.length){ c.innerHTML='<div class="empty">Tiada aduan lagi.</div>'; if(kiraan)kiraan.textContent=''; return; }
 
-  const priority = s => s==='Baru'?0:s==='Ditugaskan'?1:s==='Ditolak'?98:s==='Selesai'?99:2;
+  const priority = s => s==='Baru'?0:s==='Diterima'?1:s==='Ditolak'?98:s==='Selesai'?99:2;
   const sorted = [...aduanData].sort((a,b)=>priority(a.status)-priority(b.status));
 
-  const statusMap={semua:null,baru:['Baru'],proses:['Ditugaskan','Dalam Proses'],tangguh:['Tangguh'],selesai:['Selesai'],ditolak:['Ditolak']};
+  const statusMap={semua:null,baru:['Baru'],proses:['Diterima','Dalam Proses'],tangguh:['Tangguh'],selesai:['Selesai'],ditolak:['Ditolak']};
   const filterList=statusMap[window._filterAktif||'semua'];
   const ditapis=filterList?sorted.filter(a=>filterList.includes(a.status||'Baru')):sorted;
 
   const jBaru=aduanData.filter(a=>(a.status||'Baru')==='Baru').length;
-  const jDitugaskan=aduanData.filter(a=>a.status==='Ditugaskan').length;
+  const jDiterima=aduanData.filter(a=>a.status==='Diterima').length;
   const jProses=aduanData.filter(a=>['Dalam Proses'].includes(a.status)).length;
   const jSelesai=aduanData.filter(a=>a.status==='Selesai').length;
   const jTolak=aduanData.filter(a=>a.status==='Ditolak').length;
 
-  if(kiraan) kiraan.innerHTML=`<span style="color:#ef4444;font-weight:700;">${jBaru} Baru</span> &nbsp;·&nbsp; <span style="color:#7c3aed;font-weight:700;">${jDitugaskan} Ditugaskan</span> &nbsp;·&nbsp; <span style="color:#059669;font-weight:700;">${jSelesai} Selesai</span>`;
+  if(kiraan) kiraan.innerHTML=`<span style="color:#ef4444;font-weight:700;">${jBaru} Baru</span> &nbsp;·&nbsp; <span style="color:#7c3aed;font-weight:700;">${jDiterima} Diterima</span> &nbsp;·&nbsp; <span style="color:#059669;font-weight:700;">${jSelesai} Selesai</span>`;
 
   if(!ditapis.length){ c.innerHTML='<div class="empty">Tiada aduan dalam kategori ini.</div>'; return; }
 
@@ -1172,7 +1162,7 @@ const renderSenarai=()=>{
     if(a.gambar?.length){imgs='<div class="img-row">'+a.gambar.map(g=>`<img class="img-thumb" src="${g.thumb||g.url}" onclick="bukaLightbox('${g.url}')" alt="g">`).join('')+'</div>';}
     const isBaru=(a.status||'Baru')==='Baru';
     const isDitolak=a.status==='Ditolak';
-    const border=isBaru?'border-left:3px solid #ef4444':isDitolak?'border-left:3px solid #94a3b8;opacity:.7':a.status==='Selesai'?'border-left:3px solid #10b981;opacity:.85':a.status==='Ditugaskan'?'border-left:3px solid #7c3aed':'border-left:3px solid #f5c518';
+    const border=isBaru?'border-left:3px solid #ef4444':isDitolak?'border-left:3px solid #94a3b8;opacity:.7':a.status==='Selesai'?'border-left:3px solid #10b981;opacity:.85':a.status==='Diterima'?'border-left:3px solid #7c3aed':'border-left:3px solid #f5c518';
 
     const aksiPanel = isBaru ? `
       <div style="background:#f8fafc;border-radius:10px;padding:10px;margin-top:10px;border:.5px solid rgba(0,0,0,0.08);">
@@ -1219,9 +1209,9 @@ const renderSenarai=()=>{
 };
 
 
-// ── RENDER TINDAKAN — hanya Ditugaskan & aktif ────────────
+// ── RENDER TINDAKAN — hanya Diterima & aktif ────────────
 const renderTindakan=()=>{
-  const aktif  = aduanData.filter(a=>a.status==='Ditugaskan'||a.status==='Dalam Proses'||a.status==='Tangguh');
+  const aktif  = aduanData.filter(a=>a.status==='Diterima'||a.status==='Dalam Proses'||a.status==='Tangguh');
   const selesai= aduanData.filter(a=>a.status==='Selesai');
   document.getElementById('tindakanCount').textContent=aktif.length+' aduan';
   const c=document.getElementById('tindakanList');
@@ -1552,10 +1542,10 @@ const resetBorang=()=>{
   renderGambarPreview();
 };
 
-// ── TERIMA ADUAN → status: Ditugaskan ────────────────────
+// ── TERIMA ADUAN → status: Diterima ────────────────────
 window.terimaAduan=async(key)=>{
   const keutamaanBaru=document.getElementById('keutamaan_edit_'+key)?.value||null;
-  const updates={status:'Ditugaskan',tarikhDiterima:new Date().toLocaleDateString('ms-MY')};
+  const updates={status:'Diterima',tarikhDiterima:new Date().toLocaleDateString('ms-MY')};
   if(keutamaanBaru) updates.keutamaan=keutamaanBaru;
   try{
     await update(ref(db,'aduan/'+key),updates);
