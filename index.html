@@ -351,33 +351,38 @@ input[type=file]{display:none;}
 
       <!-- Maklumat Pengadu -->
       <div class="field"><label>Nama Pengadu *</label><input type="text" id="f_nama" placeholder="Nama penuh anda"></div>
+
+      <!-- Baris 1: Jawatan | No. Telefon -->
       <div class="field-row">
         <div class="field"><label>Jawatan *</label>
           <select id="f_jawatan"><option value="">Pilih jawatan</option><option>Pentadbiran</option><option>Staf Jururawat</option><option>Unit Teknikal</option></select>
         </div>
-        <div class="field"><label>Tarikh *</label><input type="date" id="f_tarikh"></div>
+        <div class="field"><label>No. Telefon</label>
+          <input type="tel" id="f_tel" placeholder="01x-xxxxxxx" inputmode="tel">
+        </div>
       </div>
+
+      <!-- Baris 2: Tarikh (hidden) | Masa Auto -->
+      <input type="date" id="f_tarikh" style="display:none;">
+      <div class="field">
+        <label>Tarikh &amp; Masa <span style="font-size:10px;color:#10b981;font-weight:700;">● Auto</span></label>
+        <input type="time" id="f_masa" readonly style="background:#f0fdf4;color:#065f46;font-weight:600;cursor:default;">
+      </div>
+
+      <!-- Baris 3: Lokasi | Tahap Keutamaan -->
       <div class="field-row">
-        <div class="field">
-          <label>Tarikh <span style="font-size:10px;color:#10b981;font-weight:700;">● Auto</span></label>
-          <input type="date" id="f_tarikh" readonly style="background:#f0fdf4;color:#065f46;font-weight:600;cursor:default;">
+        <div class="field"><label>Lokasi *</label>
+          <select id="f_lokasi"><option value="">Pilih lokasi</option><option>HQ True Zeal</option><option>PHDT Parit Raja</option><option>PHDT Batu Pahat</option><option>Kedai LS</option><option>Kandang LS</option></select>
         </div>
-        <div class="field">
-          <label>Masa <span style="font-size:10px;color:#10b981;font-weight:700;">● Auto</span></label>
-          <input type="time" id="f_masa" readonly style="background:#f0fdf4;color:#065f46;font-weight:600;cursor:default;">
+        <div class="field"><label>Keutamaan *</label>
+          <select id="f_keutamaan">
+            <option value="">Pilih</option>
+            <option value="Rendah">🟢 Rendah</option>
+            <option value="Sederhana">🟡 Sederhana</option>
+            <option value="Tinggi">🟠 Tinggi</option>
+            <option value="Kritikal">🔴 Kritikal</option>
+          </select>
         </div>
-      </div>
-      <div class="field"><label>Lokasi *</label>
-        <select id="f_lokasi"><option value="">Pilih lokasi</option><option>HQ True Zeal</option><option>PHDT Parit Raja</option><option>PHDT Batu Pahat</option><option>Kedai LS</option><option>Kandang LS</option></select>
-      </div>
-      <div class="field"><label>Tahap Keutamaan *</label>
-        <select id="f_keutamaan">
-          <option value="">Pilih tahap keutamaan</option>
-          <option value="Rendah">🟢 Rendah — Tidak mengganggu operasi</option>
-          <option value="Sederhana">🟡 Sederhana — Mengganggu sedikit</option>
-          <option value="Tinggi">🟠 Tinggi — Perlu tindakan segera</option>
-          <option value="Kritikal">🔴 Kritikal — Operasi tergendala</option>
-        </select>
       </div>
 
       <div class="divider"></div>
@@ -806,6 +811,7 @@ window.hantarAduan=async()=>{
   const p={
     noAduan     : no,
     namaPengadu : document.getElementById('f_nama').value.trim(),
+    noTel       : document.getElementById('f_tel')?.value.trim()||'',
     jawatan     : document.getElementById('f_jawatan').value,
     lokasi      : document.getElementById('f_lokasi').value,
     tarikh,
@@ -826,7 +832,7 @@ window.hantarAduan=async()=>{
       `[TechCareTZ] Aduan Baru — ${no} [${p.keutamaan}]`,
       EMAIL_TEKNIKAL,
       {
-        message:`Aduan baharu telah diterima dan menunggu semakan.\n\nNo. Aduan   : ${no}\nNama        : ${p.namaPengadu}\nJawatan     : ${p.jawatan}\nLokasi      : ${p.lokasi}\nTarikh/Masa : ${p.tarikh} ${masa}\nKeutamaan   : ${p.keutamaan}\nKategori    : ${kategoriDipilih.join(', ')}\n\nSila semak di Tab Senarai untuk Terima atau Tolak aduan ini.`,
+        message:`Aduan baharu telah diterima dan menunggu semakan.\n\nNo. Aduan   : ${no}\nNama        : ${p.namaPengadu}\nNo. Tel     : ${p.noTel||'-'}\nJawatan     : ${p.jawatan}\nLokasi      : ${p.lokasi}\nTarikh/Masa : ${p.tarikh} ${masa}\nKeutamaan   : ${p.keutamaan}\nKategori    : ${kategoriDipilih.join(', ')}\n\nSila semak di Tab Senarai untuk Terima atau Tolak aduan ini.`,
         no_aduan:no, nama:p.namaPengadu, lokasi:p.lokasi,
         kategori:p.kategoriIsu, tarikh:p.tarikh
       }
@@ -1070,6 +1076,7 @@ const renderSenarai=()=>{
       <div class="aduan-meta" style="align-items:center;">
         ${genderIcon(a.namaPengadu)}
         <span>👤 ${a.namaPengadu||''}</span>
+        ${a.noTel?`<span>📞 ${a.noTel}</span>`:''}
         <span>📍 ${a.lokasi||''}</span>
         <span>📅 ${a.tarikh||''} ${a.masa||''}</span>
       </div>
@@ -1408,7 +1415,7 @@ window.bukaLightbox=url=>{document.getElementById('lbImg').src=url;document.getE
 window.tutupLightbox=()=>document.getElementById('lightbox').classList.remove('show');
 
 const resetBorang=()=>{
-  ['f_nama'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f_nama','f_tel'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   ['f_jawatan','f_lokasi','f_keutamaan'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   updateMasaTarikh();
   document.querySelectorAll('input[name="kat_borang"]').forEach(cb=>cb.checked=false);
