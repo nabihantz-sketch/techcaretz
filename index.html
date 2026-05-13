@@ -188,6 +188,23 @@ input[type=file]{display:none;}
 .gender-lelaki{background:#dbeafe;}
 .gender-perempuan{background:#fce7f3;}
 .gender-neutral{background:#f1f5f9;}
+/* ── LOGIN MODAL ── */
+.login-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;}
+.login-modal.show{display:flex;}
+.login-box{background:#fff;border-radius:20px;padding:28px 22px;width:100%;max-width:340px;text-align:center;}
+.login-icon{width:56px;height:56px;background:#1a4fa0;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+.login-title{font-size:17px;font-weight:700;color:#1a1a1a;margin-bottom:4px;}
+.login-sub{font-size:12px;color:#94a3b8;margin-bottom:20px;}
+.login-input{width:100%;padding:14px;border:1.5px solid rgba(0,0,0,0.15);border-radius:12px;font-size:18px;font-family:inherit;text-align:center;letter-spacing:6px;margin-bottom:10px;}
+.login-input:focus{outline:none;border-color:#1a4fa0;box-shadow:0 0 0 3px rgba(26,79,160,.1);}
+.login-input.salah{border-color:#ef4444;animation:gegar .3s;}
+@keyframes gegar{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.login-btn{width:100%;padding:14px;border-radius:12px;background:#1a4fa0;color:#fff;font-size:15px;font-weight:700;font-family:inherit;border:none;cursor:pointer;margin-bottom:8px;}
+.login-btn:active{opacity:.85;}
+.login-cancel{width:100%;padding:10px;border-radius:12px;background:transparent;color:#94a3b8;font-size:13px;font-weight:600;font-family:inherit;border:none;cursor:pointer;}
+.login-err{font-size:12px;color:#ef4444;margin-bottom:10px;display:none;}
+.tk-badge{display:inline-flex;align-items:center;gap:4px;background:#f5c518;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;color:#1a1a1a;cursor:pointer;}
+.lock-tab{opacity:.5;}
 </style>
 </head>
 <body>
@@ -198,9 +215,11 @@ input[type=file]{display:none;}
       <div class="topbar-title">TechCareTZ</div>
       <div class="topbar-sub">True Zeal Sdn. Bhd. · 544838-H</div>
     </div>
-    <div class="conn-pill">
-      <div class="conn-dot spin" id="connDot"></div>
-      <div class="conn-text" id="connText">Menyambung...</div>
+    <div id="loginStatus" onclick="bukaPinModal()" style="cursor:pointer;">
+      <div class="conn-pill" id="connPill">
+        <div class="conn-dot spin" id="connDot"></div>
+        <div class="conn-text" id="connText">Menyambung...</div>
+      </div>
     </div>
   </div>
 
@@ -213,16 +232,16 @@ input[type=file]{display:none;}
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       Borang<div class="tab-ink"></div>
     </button>
-    <button class="tab-btn" onclick="showTab('senarai',2)" id="nav2">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    <button class="tab-btn lock-tab" onclick="aksesProtected('senarai',2)" id="nav2">
+      <span id="navIcon2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
       Senarai<div class="tab-ink"></div>
     </button>
-    <button class="tab-btn" onclick="showTab('tindakan',3)" id="nav3">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    <button class="tab-btn lock-tab" onclick="aksesProtected('tindakan',3)" id="nav3">
+      <span id="navIcon3"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
       Tindakan<div class="tab-ink"></div>
     </button>
-    <button class="tab-btn" onclick="showTab('dashboard',4)" id="nav4">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <button class="tab-btn lock-tab" onclick="aksesProtected('dashboard',4)" id="nav4">
+      <span id="navIcon4"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
       Dashboard<div class="tab-ink"></div>
     </button>
   </div>
@@ -479,6 +498,21 @@ input[type=file]{display:none;}
   </div>
 </div>
 
+<!-- LOGIN MODAL -->
+<div class="login-modal" id="loginModal">
+  <div class="login-box">
+    <div class="login-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f5c518" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="login-title">Akses Unit Teknikal</div>
+    <div class="login-sub">Masukkan PIN untuk akses Senarai, Tindakan & Dashboard</div>
+    <div class="login-err" id="loginErr">❌ PIN salah. Cuba semula.</div>
+    <input type="password" class="login-input" id="pinInput" maxlength="6" placeholder="• • • • • •" inputmode="numeric" onkeydown="if(event.key==='Enter')semakPin()">
+    <button class="login-btn" onclick="semakPin()">Masuk</button>
+    <button class="login-cancel" onclick="tutupPinModal()">Batal</button>
+  </div>
+</div>
+
 <div class="lightbox" id="lightbox" onclick="tutupLightbox()">
   <img id="lbImg" src="" alt="Gambar">
   <button class="lb-close">Tutup</button>
@@ -549,6 +583,92 @@ function bukaLightbox(url) {
 function tutupLightbox() {
   var lb = document.getElementById('lightbox');
   if (lb) lb.classList.remove('show');
+}
+
+// ══════════════════════════════════════════
+// SISTEM PIN — UNIT TEKNIKAL
+// Tukar PIN di sini:
+var UNIT_PIN = 'TZ2026';
+// ══════════════════════════════════════════
+
+var isLoggedIn = false;
+var tabTunggu  = null; // tab yang nak dibuka selepas login
+
+function aksesProtected(tab, idx) {
+  if (isLoggedIn) {
+    showTab(tab, idx);
+  } else {
+    tabTunggu = {tab, idx};
+    bukaPinModal();
+  }
+}
+
+function bukaPinModal() {
+  document.getElementById('loginModal').classList.add('show');
+  document.getElementById('pinInput').value = '';
+  document.getElementById('loginErr').style.display = 'none';
+  setTimeout(function(){ document.getElementById('pinInput').focus(); }, 300);
+}
+
+function tutupPinModal() {
+  document.getElementById('loginModal').classList.remove('show');
+  tabTunggu = null;
+}
+
+function semakPin() {
+  var pin = document.getElementById('pinInput').value;
+  if (pin === UNIT_PIN) {
+    isLoggedIn = true;
+    document.getElementById('loginModal').classList.remove('show');
+    kemasPinUI(true);
+    if (tabTunggu) {
+      showTab(tabTunggu.tab, tabTunggu.idx);
+      tabTunggu = null;
+    }
+  } else {
+    var inp = document.getElementById('pinInput');
+    var err = document.getElementById('loginErr');
+    inp.classList.add('salah');
+    err.style.display = 'block';
+    inp.value = '';
+    setTimeout(function(){ inp.classList.remove('salah'); }, 400);
+  }
+}
+
+function logoutTK() {
+  isLoggedIn = false;
+  kemasPinUI(false);
+  showTab('talian', 0);
+}
+
+function kemasPinUI(loggedIn) {
+  // Tabs 2,3,4 — unlock atau lock
+  [2,3,4].forEach(function(i) {
+    var nav = document.getElementById('nav'+i);
+    var icon = document.getElementById('navIcon'+i);
+    if (nav) nav.classList.toggle('lock-tab', !loggedIn);
+    if (icon) {
+      if (loggedIn) {
+        // Tukar ikon kunci kepada ikon asal
+        var icons = [
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>'
+        ];
+        icon.innerHTML = icons[i-2];
+      } else {
+        icon.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+      }
+    }
+  });
+  // Topbar — tunjuk badge Unit Teknikal atau status Firebase
+  var pill = document.getElementById('connPill');
+  var status = document.getElementById('loginStatus');
+  if(loggedIn) {
+    status.innerHTML = '<div style="display:flex;align-items:center;gap:6px;"><div class="tk-badge">🔓 Unit TK</div><button onclick="logoutTK()" style="background:rgba(255,255,255,.15);border:none;color:#fff;font-size:11px;font-weight:600;padding:4px 8px;border-radius:10px;cursor:pointer;font-family:inherit;">Keluar</button></div>';
+  } else {
+    status.innerHTML = '<div class="conn-pill" id="connPill"><div class="conn-dot" id="connDot"></div><div class="conn-text" id="connText">Bersambung</div></div>';
+  }
 }
 
 function simpanTindakan(key, i) {
