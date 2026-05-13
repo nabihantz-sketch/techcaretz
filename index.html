@@ -362,11 +362,14 @@ input[type=file]{display:none;}
         </div>
       </div>
 
-      <!-- Baris 2: Tarikh (hidden) | Masa Auto -->
-      <input type="date" id="f_tarikh" style="display:none;">
-      <div class="field">
-        <label>Tarikh &amp; Masa <span style="font-size:10px;color:#10b981;font-weight:700;">● Auto</span></label>
-        <input type="time" id="f_masa" readonly style="background:#f0fdf4;color:#065f46;font-weight:600;cursor:default;">
+      <!-- Baris 2: Tarikh | Masa — manual -->
+      <div class="field-row">
+        <div class="field"><label>Tarikh *</label>
+          <input type="date" id="f_tarikh">
+        </div>
+        <div class="field"><label>Masa *</label>
+          <input type="time" id="f_masa">
+        </div>
       </div>
 
       <!-- Baris 3: Lokasi | Tahap Keutamaan -->
@@ -387,12 +390,18 @@ input[type=file]{display:none;}
 
       <div class="divider"></div>
 
-      <!-- Kategori Isu -->
+      <!-- Kategori Isu — tanpa perincian -->
       <div style="font-size:11px;font-weight:700;color:#1a4fa0;margin-bottom:8px;">
         📋 Kategori Isu * <span style="font-size:10px;color:#94a3b8;font-weight:400;">(boleh pilih lebih dari 1)</span>
       </div>
       <div class="kat-grid" id="kategoriGrid"></div>
       <div id="kat_err" style="font-size:11px;color:#ef4444;display:none;margin-bottom:10px;">⚠ Sila pilih sekurang-kurangnya satu kategori</div>
+
+      <!-- Catatan -->
+      <div class="field" style="margin-top:10px;">
+        <label>Catatan / Penerangan Masalah</label>
+        <textarea id="f_catatan" placeholder="Huraikan masalah dengan jelas..." style="width:100%;padding:11px 13px;border:.5px solid rgba(0,0,0,0.15);border-radius:10px;font-size:14px;font-family:inherit;resize:none;min-height:90px;line-height:1.5;"></textarea>
+      </div>
 
       <!-- Upload Gambar -->
       <div class="field" style="margin-top:10px;">
@@ -625,16 +634,15 @@ const db  = getDatabase(app);
 
 var aduanData=[], gambarFiles=[], c1=null, c2=null;
 
-// ── AUTO DETECT TARIKH & MASA ─────────────────────────────
+// Set tarikh & masa default (manual - boleh ubah)
 const updateMasaTarikh = () => {
   const now = new Date();
   const t = document.getElementById('f_tarikh');
   const m = document.getElementById('f_masa');
-  if(t) t.value = now.toISOString().split('T')[0];
-  if(m) m.value = now.toTimeString().slice(0,5);
+  if(t && !t.value) t.value = now.toISOString().split('T')[0];
+  if(m && !m.value) m.value = now.toTimeString().slice(0,5);
 };
 updateMasaTarikh();
-setInterval(updateMasaTarikh, 60000); // update setiap minit
 
 setConn('spin','Menyambung...');
 
@@ -655,19 +663,19 @@ const kiraNo=()=>{ const yr=new Date().getFullYear(); const no='ADU-'+yr+'-'+Str
 
 // ── KATEGORI LIST ─────────────────────────────────────────
 const KATEGORI_LIST = [
-  {val:'Elektrik',              hint:'Pendawaian, suis, fius, lampu'},
-  {val:'Perpaipan',             hint:'Paip bocor, sinki, tandas'},
-  {val:'Internet / Rangkaian',  hint:'WiFi, LAN, router'},
-  {val:'Perkakasan IT',         hint:'Komputer, printer, skrin'},
-  {val:'Perisian (Software)',   hint:'Sistem, aplikasi, error'},
-  {val:'Penyaman Udara (HVAC)', hint:'Aircond, kipas, pengudaraan'},
-  {val:'Struktur Bangunan',     hint:'Dinding, bumbung, lantai'},
-  {val:'Keselamatan / Security',hint:'CCTV, kunci, akses kad'},
-  {val:'Perabot',               hint:'Meja, kerusi, almari'},
-  {val:'Telekomunikasi',        hint:'Telefon, intercom, fax'},
-  {val:'Bekalan Air',           hint:'Air kotor, tiada air'},
-  {val:'Peralatan Klinikal',    hint:'Mesin dialisis, peralatan'},
-  {val:'Penyelenggaraan Umum',  hint:'Repair umum, PM'}
+  {val:'Elektrik'},
+  {val:'Perpaipan'},
+  {val:'Internet / Rangkaian'},
+  {val:'Perkakasan IT'},
+  {val:'Perisian (Software)'},
+  {val:'Penyaman Udara (HVAC)'},
+  {val:'Struktur Bangunan'},
+  {val:'Keselamatan / Security'},
+  {val:'Perabot'},
+  {val:'Telekomunikasi'},
+  {val:'Bekalan Air'},
+  {val:'Peralatan Klinikal'},
+  {val:'Penyelenggaraan Umum'}
 ];
 
 const renderKategoriGrid = () => {
@@ -678,7 +686,6 @@ const renderKategoriGrid = () => {
       <input class="kat-cb" type="checkbox" id="kat_${i}" name="kat_borang" value="${k.val}">
       <label class="kat-lbl" for="kat_${i}">
         <span class="kat-lbl-name">${k.val}</span>
-        <span class="kat-lbl-hint">${k.hint}</span>
       </label>
     </div>`).join('');
 };
@@ -724,7 +731,7 @@ window.buangGambar = i => {
 // ── VALIDASI ─────────────────────────────────────────────
 const validasi = () => {
   let ok = true;
-  ['f_nama','f_jawatan','f_lokasi','f_keutamaan'].forEach(id => {
+  ['f_nama','f_jawatan','f_tarikh','f_masa','f_lokasi','f_keutamaan'].forEach(id => {
     const el = document.getElementById(id);
     el.classList.remove('err');
     if(!el.value.trim()){ el.classList.add('err'); ok = false; }
@@ -805,9 +812,8 @@ window.hantarAduan=async()=>{
     gambar=await uploadGambar(gambarFiles);
   }
 
-  const now = new Date();
-  const tarikh = now.toISOString().split('T')[0];
-  const masa = now.toTimeString().slice(0,5);
+  const tarikh = document.getElementById('f_tarikh').value;
+  const masa   = document.getElementById('f_masa').value;
   const p={
     noAduan     : no,
     namaPengadu : document.getElementById('f_nama').value.trim(),
@@ -816,6 +822,7 @@ window.hantarAduan=async()=>{
     lokasi      : document.getElementById('f_lokasi').value,
     tarikh,
     masa,
+    catatan     : document.getElementById('f_catatan')?.value.trim()||'',
     kategoriIsu : kategoriDipilih.join(', '),
     keutamaan   : document.getElementById('f_keutamaan').value,
     gambar,
@@ -832,7 +839,7 @@ window.hantarAduan=async()=>{
       `[TechCareTZ] Aduan Baru — ${no} [${p.keutamaan}]`,
       EMAIL_TEKNIKAL,
       {
-        message:`Aduan baharu telah diterima dan menunggu semakan.\n\nNo. Aduan   : ${no}\nNama        : ${p.namaPengadu}\nNo. Tel     : ${p.noTel||'-'}\nJawatan     : ${p.jawatan}\nLokasi      : ${p.lokasi}\nTarikh/Masa : ${p.tarikh} ${masa}\nKeutamaan   : ${p.keutamaan}\nKategori    : ${kategoriDipilih.join(', ')}\n\nSila semak di Tab Senarai untuk Terima atau Tolak aduan ini.`,
+        message:`Aduan baharu telah diterima dan menunggu semakan.\n\nNo. Aduan   : ${no}\nNama        : ${p.namaPengadu}\nNo. Tel     : ${p.noTel||'-'}\nJawatan     : ${p.jawatan}\nLokasi      : ${p.lokasi}\nTarikh/Masa : ${p.tarikh} ${masa}\nKeutamaan   : ${p.keutamaan}\nKategori    : ${kategoriDipilih.join(', ')}\nCatatan     : ${p.catatan||'-'}\n\nSila semak di Tab Senarai untuk Terima atau Tolak aduan ini.`,
         no_aduan:no, nama:p.namaPengadu, lokasi:p.lokasi,
         kategori:p.kategoriIsu, tarikh:p.tarikh
       }
@@ -1415,9 +1422,11 @@ window.bukaLightbox=url=>{document.getElementById('lbImg').src=url;document.getE
 window.tutupLightbox=()=>document.getElementById('lightbox').classList.remove('show');
 
 const resetBorang=()=>{
-  ['f_nama','f_tel'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f_nama','f_tel','f_catatan'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   ['f_jawatan','f_lokasi','f_keutamaan'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  updateMasaTarikh();
+  const now=new Date();
+  const el=document.getElementById('f_tarikh');if(el)el.value=now.toISOString().split('T')[0];
+  const em=document.getElementById('f_masa');if(em)em.value=now.toTimeString().slice(0,5);
   document.querySelectorAll('input[name="kat_borang"]').forEach(cb=>cb.checked=false);
   gambarFiles=[];
   renderGambarPreview();
