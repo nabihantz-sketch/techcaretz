@@ -358,10 +358,17 @@ input[type=file]{display:none;}
         <div class="field"><label>Tarikh *</label><input type="date" id="f_tarikh"></div>
       </div>
       <div class="field-row">
-        <div class="field"><label>Masa *</label><input type="time" id="f_masa"></div>
-        <div class="field"><label>Lokasi *</label>
-          <select id="f_lokasi"><option value="">Pilih lokasi</option><option>HQ True Zeal</option><option>PHDT Parit Raja</option><option>PHDT Batu Pahat</option><option>Kedai LS</option><option>Kandang LS</option></select>
+        <div class="field">
+          <label>Tarikh <span style="font-size:10px;color:#10b981;font-weight:700;">● Auto</span></label>
+          <input type="date" id="f_tarikh" readonly style="background:#f0fdf4;color:#065f46;font-weight:600;cursor:default;">
         </div>
+        <div class="field">
+          <label>Masa <span style="font-size:10px;color:#10b981;font-weight:700;">● Auto</span></label>
+          <input type="time" id="f_masa" readonly style="background:#f0fdf4;color:#065f46;font-weight:600;cursor:default;">
+        </div>
+      </div>
+      <div class="field"><label>Lokasi *</label>
+        <select id="f_lokasi"><option value="">Pilih lokasi</option><option>HQ True Zeal</option><option>PHDT Parit Raja</option><option>PHDT Batu Pahat</option><option>Kedai LS</option><option>Kandang LS</option></select>
       </div>
       <div class="field"><label>Tahap Keutamaan *</label>
         <select id="f_keutamaan">
@@ -613,9 +620,18 @@ const db  = getDatabase(app);
 
 var aduanData=[], gambarFiles=[], c1=null, c2=null;
 
+// ── AUTO DETECT TARIKH & MASA ─────────────────────────────
+const updateMasaTarikh = () => {
+  const now = new Date();
+  const t = document.getElementById('f_tarikh');
+  const m = document.getElementById('f_masa');
+  if(t) t.value = now.toISOString().split('T')[0];
+  if(m) m.value = now.toTimeString().slice(0,5);
+};
+updateMasaTarikh();
+setInterval(updateMasaTarikh, 60000); // update setiap minit
+
 setConn('spin','Menyambung...');
-document.getElementById('f_tarikh').value = new Date().toISOString().split('T')[0];
-document.getElementById('f_masa').value = new Date().toTimeString().slice(0,5);
 
 onValue(ref(db,'aduan'), snap=>{
   const data=snap.val(); aduanData=[];
@@ -784,13 +800,15 @@ window.hantarAduan=async()=>{
     gambar=await uploadGambar(gambarFiles);
   }
 
-  const masa=document.getElementById('f_masa').value||new Date().toTimeString().slice(0,5);
+  const now = new Date();
+  const tarikh = now.toISOString().split('T')[0];
+  const masa = now.toTimeString().slice(0,5);
   const p={
     noAduan     : no,
     namaPengadu : document.getElementById('f_nama').value.trim(),
     jawatan     : document.getElementById('f_jawatan').value,
     lokasi      : document.getElementById('f_lokasi').value,
-    tarikh      : document.getElementById('f_tarikh').value,
+    tarikh,
     masa,
     kategoriIsu : kategoriDipilih.join(', '),
     keutamaan   : document.getElementById('f_keutamaan').value,
@@ -1392,8 +1410,7 @@ window.tutupLightbox=()=>document.getElementById('lightbox').classList.remove('s
 const resetBorang=()=>{
   ['f_nama'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   ['f_jawatan','f_lokasi','f_keutamaan'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('f_tarikh').value=new Date().toISOString().split('T')[0];
-  document.getElementById('f_masa').value=new Date().toTimeString().slice(0,5);
+  updateMasaTarikh();
   document.querySelectorAll('input[name="kat_borang"]').forEach(cb=>cb.checked=false);
   gambarFiles=[];
   renderGambarPreview();
