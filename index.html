@@ -490,11 +490,15 @@ input[type=file]{display:none;}
       <div class="metric"><div class="metric-lbl">Tangguh/Baru</div><div class="metric-val" style="color:#dc2626;" id="mT">0</div><div class="metric-sub">Perlu perhatian</div></div>
     </div>
     <div class="card" style="margin-bottom:12px;">
-      <div class="card-title">Aduan mengikut kategori</div>
-      <div class="chart-wrap" style="height:200px;"><canvas id="chart1" role="img" aria-label="Carta bar">Carta</canvas></div>
+      <div class="card-title">Isu mengikut kategori</div>
+      <div class="chart-wrap" style="height:220px;"><canvas id="chart1" role="img" aria-label="Carta bar">Carta</canvas></div>
+    </div>
+    <div class="card" style="margin-bottom:12px;">
+      <div class="card-title">Top 5 kategori isu terbanyak</div>
+      <div id="katSummary"></div>
     </div>
     <div class="card">
-      <div class="card-title">Status kerja</div>
+      <div class="card-title">Status aduan</div>
       <div class="chart-wrap" style="height:200px;"><canvas id="chart2" role="img" aria-label="Carta donut">Carta</canvas></div>
     </div>
   </div>
@@ -1600,19 +1604,99 @@ const uploadGambarTindakan=async files=>{
 
 // ── DASHBOARD ─────────────────────────────────────────────
 const renderDashboard=()=>{
-  let r={jumlah:0,selesai:0,proses:0,tangguh:0,baru:0},kat={};
-  aduanData.forEach(a=>{ r.jumlah++; if(a.status==='Selesai')r.selesai++; else if(a.status==='Tangguh')r.tangguh++; else if(a.status==='Baru'||!a.status)r.baru++; else r.proses++; const k=a.kategoriIsu||'Lain-lain'; kat[k]=(kat[k]||0)+1; });
+  let r={jumlah:0,selesai:0,proses:0,tangguh:0,baru:0};
+  const kat={};  // kiraan setiap kategori isu individual
+
+  aduanData.forEach(a=>{
+    r.jumlah++;
+    if(a.status==='Selesai')r.selesai++;
+    else if(a.status==='Tangguh')r.tangguh++;
+    else if(a.status==='Baru'||!a.status)r.baru++;
+    else r.proses++;
+
+    // Split kategoriIsu — satu aduan boleh ada beberapa kategori
+    const categories = (a.kategoriIsu||'Lain-lain').split(',').map(k=>k.trim()).filter(Boolean);
+    categories.forEach(k=>{ kat[k]=(kat[k]||0)+1; });
+  });
+
   document.getElementById('mJ').textContent=r.jumlah;
   document.getElementById('mS').textContent=r.selesai;
   document.getElementById('mP').textContent=r.proses;
   document.getElementById('mT').textContent=r.tangguh+r.baru;
   document.getElementById('mPc').textContent=(r.jumlah?Math.round(r.selesai/r.jumlah*100):0)+'% kadar';
-  const labels=Object.keys(kat),vals=labels.map(k=>kat[k]);
-  const cols=['#f5c518','#1a4fa0','#f5c518','#1a4fa0','#f5c518','#1a4fa0','#f5c518'];
+
+  // Susun ikut kiraan tertinggi
+  const sorted=Object.entries(kat).sort((a,b)=>b[1]-a[1]);
+  const labels=sorted.map(e=>e[0]);
+  const vals=sorted.map(e=>e[1]);
+
+  // Palet warna pelbagai — mudah dibaca
+  const PALET=[
+    '#6366f1','#f59e0b','#10b981','#ef4444',
+    '#3b82f6','#ec4899','#8b5cf6','#14b8a6',
+    '#f97316','#06b6d4','#84cc16','#e11d48','#0ea5e9'
+  ];
+  const cols=labels.map((_,i)=>PALET[i%PALET.length]);
+
   if(c1)c1.destroy();
-  c1=new Chart(document.getElementById('chart1'),{type:'bar',data:{labels:labels.length?labels:['Tiada data'],datasets:[{data:vals.length?vals:[0],backgroundColor:cols,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}}},x:{ticks:{font:{size:9},maxRotation:35}}}}});
+  c1=new Chart(document.getElementById('chart1'),{
+    type:'bar',
+    data:{
+      labels:labels.length?labels:['Tiada data'],
+      datasets:[{
+        label:'Bilangan Isu',
+        data:vals.length?vals:[0],
+        backgroundColor:cols,
+        borderRadius:6,
+        borderSkipped:false
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{title:items=>`${items[0].label}`,label:items=>`${items.raw} isu`}}
+      },
+      scales:{
+        y:{beginAtZero:true,ticks:{stepSize:1,font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},
+        x:{ticks:{font:{size:9},maxRotation:40},grid:{display:false}}
+      }
+    }
+  });
+
+  // Tambah carta horizontal bar untuk top 5 kategori
   if(c2)c2.destroy();
-  c2=new Chart(document.getElementById('chart2'),{type:'doughnut',data:{labels:['Selesai','Proses','Tangguh','Baru'],datasets:[{data:[r.selesai,r.proses,r.tangguh,r.baru],backgroundColor:['#059669','#f5c518','#ef4444','#94a3b8'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'right',labels:{font:{size:11},padding:10,boxWidth:10}}}}});
+  c2=new Chart(document.getElementById('chart2'),{
+    type:'doughnut',
+    data:{
+      labels:['Selesai','Dalam Proses','Tangguh','Baru'],
+      datasets:[{
+        data:[r.selesai,r.proses,r.tangguh,r.baru],
+        backgroundColor:['#10b981','#6366f1','#ef4444','#94a3b8'],
+        borderWidth:2,borderColor:'#fff'
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      cutout:'60%',
+      plugins:{
+        legend:{position:'right',labels:{font:{size:11},padding:10,boxWidth:10}}
+      }
+    }
+  });
+
+  // Kemaskini kiraan kategori dalam card tambahan
+  const katCard=document.getElementById('katSummary');
+  if(katCard){
+    katCard.innerHTML=sorted.slice(0,5).map((e,i)=>`
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div style="width:10px;height:10px;border-radius:50%;background:${PALET[i]};flex-shrink:0;"></div>
+        <div style="flex:1;font-size:12px;font-weight:600;color:#1a1a1a;">${e[0]}</div>
+        <div style="font-size:12px;font-weight:700;color:${PALET[i]};">${e[1]} isu</div>
+      </div>`).join('');
+  }
 };
 
 window.bukaLightbox=url=>{document.getElementById('lbImg').src=url;document.getElementById('lightbox').classList.add('show');};
